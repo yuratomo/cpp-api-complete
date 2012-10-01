@@ -15,6 +15,57 @@ let s:complete_mode = s:MODE_CLASS
 let s:type = ''
 let s:parts = []
 
+function! cppapi#t()
+  echo s:type
+  echo s:parts
+  echo s:complete_mode
+endfunction
+
+let s:registed = []
+function! cppapi#x(type)
+  let first = 1
+  let through = 0
+  let tl = taglist(a:type)
+  wincmd p
+  for t in tl
+    if t.kind == 't' || t.kind == 's'
+      let ref = ''
+      if has_key(t, 'typeref')
+        let ref = substitute(t.typeref, 'struct:', '', '')
+      endif
+      if ref == t.name
+        let ref = ''
+      endif
+      if first == 0
+        call setline(line('$')+1, '  \ ])')
+        call setline(line('$')+1, '')
+        let through = 1
+        let first = 1
+      endif
+      if index(s:registed, t.name) == -1
+        call add(s:registed, t.name)
+        call setline(line('$')+1, "call cppapi#struct('" . t.name[1:] . "', '" . t.name . "', [])")
+        call setline(line('$')+1, "call cppapi#struct('P". t.name[1:] . "', '" . t.name . "', [])")
+        call setline(line('$')+1, "call cppapi#struct('" . t.name . "', '" . ref . "', [")
+        let first = 0
+        let through = 0
+      else
+        let through = 1
+      endif
+    elseif t.kind == 'm'
+      if through == 0
+        let parts = split(t.cmd, '[\t ;]\+')
+        call setline(line('$')+1, "  \\ cppapi#field('" . parts[2] . "', '" . parts[1] . "'),")
+      endif
+    endif
+"  call setline(line('$')+1, string(t))
+  endfor
+  if first == 0
+    call setline(line('$')+1, '  \ ])')
+    call setline(line('$')+1, '')
+  endif
+endfunction
+
 function! cppapi#complete(findstart, base)
   try
     if exists('g:cppapi_pre_omnifunc') && g:cppapi_pre_omnifunc != ''
@@ -95,7 +146,33 @@ function! s:class_new_completion(base, res)
 endfunction
 
 function! s:normalize_type(type)
-  return substitute(substitute(a:type, '<.*>', '', ''), '\[.*\]', '', '')
+  return substitute(
+        \ substitute(
+        \ substitute(
+        \ a:type, 
+        \ '<.*>', '', ''), 
+        \ '\[.*\]', '', ''),
+        \ 'static ', '', '')
+endfunction
+
+function! s:normalize_retval(type)
+  return substitute(
+        \ substitute(
+        \ substitute(
+        \ substitute(
+        \ a:type,
+        \ '<.*>', '', ''),
+        \ '\[.*\]', '', ''),
+        \ 'static ', '', ''),
+        \ 'abstruct ', '', '')
+endfunction
+
+function! s:normalize_prop(prop)
+  return substitute(
+        \ substitute(
+        \ a:prop,
+        \ '<.\{-\}>','','g'),
+        \ '\[.\{-\}\]','','g')
 endfunction
 
 function! s:class_member_completion(base, res)
@@ -103,43 +180,48 @@ function! s:class_member_completion(base, res)
   let idx = 0
   let class = s:normalize_type(s:type)
   for part in s:parts
+    if idx == 0
+      let idx = 1
+      continue
+    endif
     if !cppapi#isClassExist(class)
       break
     else
       let item = cppapi#getClass(class)
     endif
 
-    if idx < len - 1
-      if idx == 0
-        let idx += 1
-        continue
-      endif
-      let _break = 0
-      while 1
-        if idx < len - 2
-          for member in item.members
-            if member.name ==# part
-              let _break = 1
-              let class = member.class
-              break
-            endif
-          endfor
-        endif
-        if _break == 1
-          break
-        endif
-        if has_key(item, 'extend') && cppapi#isClassExist(item.extend)
-          let item = cppapi#getClass(item.extend)
-        else
-          break
-        endif
-      endwhile
-    else
-      call s:attr_completion(item.name, a:base, a:res)
+    if idx == len - 1
+      break
     endif
+
+    " find target in member list
+    let _break = 0
+    while 1
+      if idx < len - 2
+        for member in item.members
+          if member.name ==# part
+            let _break = 1
+            let class = s:normalize_retval(member.class)
+            break
+          endif
+        endfor
+      endif
+      if _break == 1
+        break
+      endif
+      if has_key(item, 'extend') && cppapi#isClassExist(item.extend)
+        let item = cppapi#getClass(item.extend)
+      else
+        return
+      endif
+    endwhile
 
     let idx += 1
   endfor
+
+  if exists('item')
+    call s:attr_completion(item.name, a:base, a:res)
+  endif
 endfunction
 
 function! s:attr_completion(tag, base, res)
@@ -210,22 +292,23 @@ function! s:analize(line, cur)
   if pstart == -1
     let pstart = vstart
   endif
+  let variable = substitute(line[ vstart : cur ], '(.*)', '(', 'g')
 
   " separate variable by dot and resolve type.
   let type = ''
-  let parts = split(line[ vstart : cur ], '\.')
-  if !empty(parts)
+  let parts = split(s:normalize_prop(variable), '\.')
+  if !empty(parts) && parts[0] != '='
     if line[cur-1] == '.'
       call add(parts, '')
     endif
     let type = s:find_type(a:line, parts[0])
-    let parts[0] = type
   else
     " value complete
     let idx = cur - 1
     while idx > 0 && line[idx] =~ '[ \t]'
       let idx -= 1
     endwhile
+
     if line[idx] == '='
       let compmode = s:MODE_VALUE
     elseif idx >= 3 && line[ idx-3 : ] =~ '\<new\>'
