@@ -496,9 +496,17 @@ function! cppapi#gendef(type)
       endif
       if index(s:registed, t.name) == -1
         call add(s:registed, t.name)
-        call setline(line('$')+1, "call cppapi#struct('" . t.name[1:] . "', '" . t.name . "', [])")
-        call setline(line('$')+1, "call cppapi#struct('P". t.name[1:] . "', '" . t.name . "', [])")
-        call setline(line('$')+1, "call cppapi#struct('" . t.name . "', '" . ref . "', [")
+        if t.name[0] == '_'
+          call setline(line('$')+1, "call cppapi#struct('" . t.name[1:] . "', '" . t.name . "', [])")
+          call setline(line('$')+1, "call cppapi#struct('P". t.name[1:] . "', '" . t.name . "', [])")
+          call setline(line('$')+1, "call cppapi#struct('" . t.name . "', '" . ref . "', [")
+        elseif t.name =~ '^tag'
+          call setline(line('$')+1, "call cppapi#struct('" . t.name[3:] . "', '" . t.name . "', [])")
+          call setline(line('$')+1, "call cppapi#struct('P". t.name[3:] . "', '" . t.name . "', [])")
+          call setline(line('$')+1, "call cppapi#struct('" . t.name . "', '" . ref . "', [")
+        else
+          call setline(line('$')+1, "call cppapi#struct('" . t.name . "', '" . ref . "', [")
+        endif
         let first = 0
         let through = 0
       else
