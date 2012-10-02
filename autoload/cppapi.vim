@@ -140,7 +140,9 @@ function! s:class_member_completion(base, res)
       continue
     endif
     if !cppapi#isClassExist(class)
-      unlet item
+      if exists('item')
+        unlet item
+      endif
       break
     else
       let item = cppapi#getClass(class)
