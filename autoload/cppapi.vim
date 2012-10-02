@@ -21,51 +21,6 @@ function! cppapi#t()
   echo s:complete_mode
 endfunction
 
-let s:registed = []
-function! cppapi#x(type)
-  let first = 1
-  let through = 0
-  let tl = taglist(a:type)
-  wincmd p
-  for t in tl
-    if t.kind == 't' || t.kind == 's'
-      let ref = ''
-      if has_key(t, 'typeref')
-        let ref = substitute(t.typeref, 'struct:', '', '')
-      endif
-      if ref == t.name
-        let ref = ''
-      endif
-      if first == 0
-        call setline(line('$')+1, '  \ ])')
-        call setline(line('$')+1, '')
-        let through = 1
-        let first = 1
-      endif
-      if index(s:registed, t.name) == -1
-        call add(s:registed, t.name)
-        call setline(line('$')+1, "call cppapi#struct('" . t.name[1:] . "', '" . t.name . "', [])")
-        call setline(line('$')+1, "call cppapi#struct('P". t.name[1:] . "', '" . t.name . "', [])")
-        call setline(line('$')+1, "call cppapi#struct('" . t.name . "', '" . ref . "', [")
-        let first = 0
-        let through = 0
-      else
-        let through = 1
-      endif
-    elseif t.kind == 'm'
-      if through == 0
-        let parts = split(t.cmd, '[\t ;]\+')
-        call setline(line('$')+1, "  \\ cppapi#field('" . parts[2] . "', '" . parts[1] . "'),")
-      endif
-    endif
-"  call setline(line('$')+1, string(t))
-  endfor
-  if first == 0
-    call setline(line('$')+1, '  \ ])')
-    call setline(line('$')+1, '')
-  endif
-endfunction
-
 function! cppapi#complete(findstart, base)
   try
     if exists('g:cppapi_pre_omnifunc') && g:cppapi_pre_omnifunc != ''
@@ -185,6 +140,7 @@ function! s:class_member_completion(base, res)
       continue
     endif
     if !cppapi#isClassExist(class)
+      unlet item
       break
     else
       let item = cppapi#getClass(class)
@@ -197,19 +153,17 @@ function! s:class_member_completion(base, res)
     " find target in member list
     let _break = 0
     while 1
-      if idx < len - 2
-        for member in item.members
-          if member.name ==# part
-            let _break = 1
-            let class = s:normalize_retval(member.class)
-            break
-          endif
-        endfor
-      endif
+      for member in item.members
+        if member.name ==# part
+          let _break = 1
+          let class = s:normalize_retval(member.class)
+          break
+        endif
+      endfor
       if _break == 1
         break
       endif
-      if has_key(item, 'extend') && cppapi#isClassExist(item.extend)
+      if has_key(item, 'extend') && item.extend != '' && cppapi#isClassExist(item.extend)
         let item = cppapi#getClass(item.extend)
       else
         return
@@ -486,7 +440,7 @@ function! cppapi#balloon()
 endfunction
 
 " load autoload/cppapi/.vim
-if !exists('s:dictionary_loaded')
+"if !exists('s:dictionary_loaded')
   for file in split(globpath(&runtimepath, 'autoload/cppapi/*.vim'), '\n')
 
     " ignore file
@@ -507,5 +461,65 @@ if !exists('s:dictionary_loaded')
   endfor
   echo '[cpp-complete] loaded!'
   let s:dictionary_loaded = 1
-endif
+"endif
+
+
+" generate comp-define from tag
+
+let s:registed = []
+function! cppapi#gendef(type)
+  let first = 1
+  let through = 0
+  let tl = taglist(a:type)
+  wincmd p
+  if a:type =~ '::'
+    call setline(line('$')+1, "call cppapi#struct('" . a:type . "', '', [")
+  endif
+
+  for t in tl
+    let ref = ''
+    if has_key(t, 'typeref')
+      let ref = substitute(t.typeref, '.\{-\}:', '', '')
+    endif
+    if ref == t.name
+      let ref = ''
+    endif
+
+    if t.kind == 't' || t.kind == 's'
+      if first == 0
+        call setline(line('$')+1, '  \ ])')
+        call setline(line('$')+1, '')
+        let through = 1
+        let first = 1
+      endif
+      if index(s:registed, t.name) == -1
+        call add(s:registed, t.name)
+        call setline(line('$')+1, "call cppapi#struct('" . t.name[1:] . "', '" . t.name . "', [])")
+        call setline(line('$')+1, "call cppapi#struct('P". t.name[1:] . "', '" . t.name . "', [])")
+        call setline(line('$')+1, "call cppapi#struct('" . t.name . "', '" . ref . "', [")
+        let first = 0
+        let through = 0
+      else
+        let through = 1
+      endif
+    elseif t.kind == 'm'
+      if through == 0
+        let parts = split(substitute(t.cmd, '\(__\w\+\|struct\)', '', ''), '[\t ;]\+')
+        if parts[1] == '}'
+          call setline(line('$')+1, "  \\ cppapi#field('" . parts[2] . "', '" . ref . "'),")
+        else
+          call setline(line('$')+1, "  \\ cppapi#field('" . parts[2] . "', '" . parts[1] . "'),")
+        endif
+      endif
+    endif
+  endfor
+  if first == 0
+    call setline(line('$')+1, '  \ ])')
+    call setline(line('$')+1, '')
+  endif
+  if a:type =~ '::'
+    call setline(line('$')+1, '  \ ])')
+    call setline(line('$')+1, '')
+  endif
+endfunction
 

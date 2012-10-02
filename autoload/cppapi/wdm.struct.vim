@@ -1,367 +1,4 @@
 
-call cppapi#struct('DEVICE_OBJECT', '_DEVICE_OBJECT', [])
-call cppapi#struct('PDEVICE_OBJECT', '_DEVICE_OBJECT', [])
-call cppapi#struct('_DEVICE_OBJECT', '', [
-  \ cppapi#field('ActiveThreadCount', 'ULONG'),
-  \ cppapi#field('AlignmentRequirement', 'ULONG'),
-  \ cppapi#field('_DEVICE_OBJECT', 'struct'),
-  \ cppapi#field('Characteristics', 'ULONG'),
-  \ cppapi#field('_IRP', 'struct'),
-  \ cppapi#field('DeviceExtension', 'PVOID'),
-  \ cppapi#field('DeviceLock', 'KEVENT'),
-  \ cppapi#field('_DEVOBJ_EXTENSION', 'struct'),
-  \ cppapi#field('DeviceQueue', 'KDEVICE_QUEUE'),
-  \ cppapi#field('DeviceType', 'DEVICE_TYPE'),
-  \ cppapi#field('Dpc', 'KDPC'),
-  \ cppapi#field('_DRIVER_OBJECT', 'struct'),
-  \ cppapi#field('Flags', 'ULONG'),
-  \ cppapi#field('_DEVICE_OBJECT', 'struct'),
-  \ cppapi#field('Queue', '}'),
-  \ cppapi#field('ReferenceCount', 'LONG'),
-  \ cppapi#field('Reserved', 'PVOID'),
-  \ cppapi#field('SectorSize', 'USHORT'),
-  \ cppapi#field('SecurityDescriptor', 'PSECURITY_DESCRIPTOR'),
-  \ cppapi#field('Size', 'USHORT'),
-  \ cppapi#field('Spare1', 'USHORT'),
-  \ cppapi#field('StackSize', 'CCHAR'),
-  \ cppapi#field('Timer', 'PIO_TIMER'),
-  \ cppapi#field('Type', 'CSHORT'),
-  \ cppapi#field('PVPB', '__volatile'),
-  \ cppapi#field('ListEntry', 'LIST_ENTRY'),
-  \ cppapi#field('Wcb', 'WAIT_CONTEXT_BLOCK'),
-  \ ])
-
-call cppapi#struct('M_Power_Data_s', 'CM_Power_Data_s', [])
-call cppapi#struct('PM_Power_Data_s', 'CM_Power_Data_s', [])
-call cppapi#struct('CM_Power_Data_s', '', [
-  \ cppapi#field('PD_Capabilities', 'ULONG'),
-  \ cppapi#field('PD_D1Latency', 'ULONG'),
-  \ cppapi#field('PD_D2Latency', 'ULONG'),
-  \ cppapi#field('PD_D3Latency', 'ULONG'),
-  \ cppapi#field('PD_DeepestSystemWake', 'SYSTEM_POWER_STATE'),
-  \ cppapi#field('PD_MostRecentPowerState', 'DEVICE_POWER_STATE'),
-  \ cppapi#field('PD_PowerStateMapping[POWER_SYSTEM_MAXIMUM]', 'DEVICE_POWER_STATE'),
-  \ cppapi#field('PD_Size', 'ULONG'),
-  \ ])
-
-call cppapi#struct('IRP', '_IRP', [])
-call cppapi#struct('PIRP', '_IRP', [])
-call cppapi#struct('_IRP', '', [
-  \ cppapi#field('AllocationFlags', 'UCHAR'),
-  \ cppapi#field('ApcEnvironment', 'CCHAR'),
-  \ cppapi#field('AssociatedIrp', '}'),
-  \ cppapi#field('Cancel', 'BOOLEAN'),
-  \ cppapi#field('CancelIrql', 'KIRQL'),
-  \ cppapi#field('PDRIVER_CANCEL', '__volatile'),
-  \ cppapi#field('CurrentLocation', 'CHAR'),
-  \ cppapi#field('Flags', 'ULONG'),
-  \ cppapi#field('IoStatus', 'IO_STATUS_BLOCK'),
-  \ cppapi#field('MdlAddress', 'PMDL'),
-  \ cppapi#field('Overlay', '}'),
-  \ cppapi#field('PendingReturned', 'BOOLEAN'),
-  \ cppapi#field('RequestorMode', 'KPROCESSOR_MODE'),
-  \ cppapi#field('Size', 'USHORT'),
-  \ cppapi#field('StackCount', 'CHAR'),
-  \ cppapi#field('Tail', '}'),
-  \ cppapi#field('ThreadListEntry', 'LIST_ENTRY'),
-  \ cppapi#field('Type', 'CSHORT'),
-  \ cppapi#field('UserBuffer', 'PVOID'),
-  \ cppapi#field('UserEvent', 'PKEVENT'),
-  \ cppapi#field('UserIosb', 'PIO_STATUS_BLOCK'),
-  \ cppapi#field('LONG', '__volatile'),
-  \ cppapi#field('_IRP', 'struct'),
-  \ cppapi#field('SystemBuffer', 'PVOID'),
-  \ cppapi#field('AllocationSize', 'LARGE_INTEGER'),
-  \ cppapi#field('AsynchronousParameters', '}'),
-  \ cppapi#field('UserApcContext', 'PVOID'),
-  \ cppapi#field('IssuingProcess', 'PVOID'),
-  \ cppapi#field('UserApcRoutine', 'PIO_APC_ROUTINE'),
-  \ cppapi#field('Apc', 'KAPC'),
-  \ cppapi#field('CompletionKey', 'PVOID'),
-  \ cppapi#field('Overlay', '}'),
-  \ cppapi#field('AuxiliaryBuffer', 'PCHAR'),
-  \ cppapi#field('OriginalFileObject', 'PFILE_OBJECT'),
-  \ cppapi#field('Thread', 'PETHREAD'),
-  \ cppapi#field('DeviceQueueEntry', 'KDEVICE_QUEUE_ENTRY'),
-  \ cppapi#field('DriverContext[4]', 'PVOID'),
-  \ cppapi#field('ListEntry', 'LIST_ENTRY'),
-  \ cppapi#field('_IO_STACK_LOCATION', 'struct'),
-  \ cppapi#field('PacketType', 'ULONG'),
-  \ ])
-
-call cppapi#struct('IO_STACK_LOCATION', '_IO_STACK_LOCATION', [])
-call cppapi#struct('PIO_STACK_LOCATION', '_IO_STACK_LOCATION', [])
-call cppapi#struct('_IO_STACK_LOCATION', '', [
-  \ cppapi#field('CompletionRoutine', 'PIO_COMPLETION_ROUTINE'),
-  \ cppapi#field('Context', 'PVOID'),
-  \ cppapi#field('Control', 'UCHAR'),
-  \ cppapi#field('DeviceObject', 'PDEVICE_OBJECT'),
-  \ cppapi#field('FileObject', 'PFILE_OBJECT'),
-  \ cppapi#field('Flags', 'UCHAR'),
-  \ cppapi#field('MajorFunction', 'UCHAR'),
-  \ cppapi#field('MinorFunction', 'UCHAR'),
-  \ cppapi#field('Parameters', '}'),
-  \ cppapi#field('Create', '}'),
-  \ cppapi#field('DeviceCapabilities', '}'),
-  \ cppapi#field('DeviceIoControl', '}'),
-  \ cppapi#field('FileSystemControl', '}'),
-  \ cppapi#field('FilterResourceRequirements', '}'),
-  \ cppapi#field('LockControl', '}'),
-  \ cppapi#field('MountVolume', '}'),
-  \ cppapi#field('NotifyDirectory', '}'),
-  \ cppapi#field('Others', '}'),
-  \ cppapi#field('Power', '}'),
-  \ cppapi#field('Power', '}'),
-  \ cppapi#field('PowerSequence', '}'),
-  \ cppapi#field('QueryDeviceRelations', '}'),
-  \ cppapi#field('QueryDeviceText', '}'),
-  \ cppapi#field('QueryDirectory', '}'),
-  \ cppapi#field('QueryEa', '}'),
-  \ cppapi#field('QueryFile', '}'),
-  \ cppapi#field('QueryId', '}'),
-  \ cppapi#field('QueryInterface', '}'),
-  \ cppapi#field('QueryQuota', '}'),
-  \ cppapi#field('QuerySecurity', '}'),
-  \ cppapi#field('QueryVolume', '}'),
-  \ cppapi#field('Read', '}'),
-  \ cppapi#field('ReadWriteConfig', '}'),
-  \ cppapi#field('Scsi', '}'),
-  \ cppapi#field('SetEa', '}'),
-  \ cppapi#field('SetFile', '}'),
-  \ cppapi#field('SetLock', '}'),
-  \ cppapi#field('SetQuota', '}'),
-  \ cppapi#field('SetSecurity', '}'),
-  \ cppapi#field('SetVolume', '}'),
-  \ cppapi#field('StartDevice', '}'),
-  \ cppapi#field('UsageNotification', '}'),
-  \ cppapi#field('VerifyVolume', '}'),
-  \ cppapi#field('WMI', '}'),
-  \ cppapi#field('WaitWake', '}'),
-  \ cppapi#field('Write', '}'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'USHORT'),
-  \ cppapi#field('Options', 'ULONG'),
-  \ cppapi#field('SecurityContext', 'PIO_SECURITY_CONTEXT'),
-  \ cppapi#field('ShareAccess', 'USHORT'),
-  \ cppapi#field('ByteOffset', 'LARGE_INTEGER'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
-  \ cppapi#field('Length', 'ULONG'),
-  \ cppapi#field('ByteOffset', 'LARGE_INTEGER'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
-  \ cppapi#field('Length', 'ULONG'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
-  \ cppapi#field('FileInformationClass', 'FILE_INFORMATION_CLASS'),
-  \ cppapi#field('FileName', 'PUNICODE_STRING'),
-  \ cppapi#field('Length', 'ULONG'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
-  \ cppapi#field('Length', 'ULONG'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'FILE_INFORMATION_CLASS'),
-  \ cppapi#field('Length', 'ULONG'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'FILE_INFORMATION_CLASS'),
-  \ cppapi#field('FileObject', 'PFILE_OBJECT'),
-  \ cppapi#field('Length', 'ULONG'),
-  \ cppapi#field('ClusterCount', 'ULONG'),
-  \ cppapi#field('DeleteHandle', 'HANDLE'),
-  \ cppapi#field('AdvanceOnly', 'BOOLEAN'),
-  \ cppapi#field('ReplaceIfExists', 'BOOLEAN'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
-  \ cppapi#field('EaList', 'PVOID'),
-  \ cppapi#field('EaListLength', 'ULONG'),
-  \ cppapi#field('Length', 'ULONG'),
-  \ cppapi#field('Length', 'ULONG'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'FS_INFORMATION_CLASS'),
-  \ cppapi#field('Length', 'ULONG'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'FS_INFORMATION_CLASS'),
-  \ cppapi#field('Length', 'ULONG'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
-  \ cppapi#field('OutputBufferLength', 'ULONG'),
-  \ cppapi#field('Type3InputBuffer', 'PVOID'),
-  \ cppapi#field('ByteOffset', 'LARGE_INTEGER'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
-  \ cppapi#field('Length', 'PLARGE_INTEGER'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
-  \ cppapi#field('OutputBufferLength', 'ULONG'),
-  \ cppapi#field('Type3InputBuffer', 'PVOID'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
-  \ cppapi#field('SecurityInformation', 'SECURITY_INFORMATION'),
-  \ cppapi#field('SecurityDescriptor', 'PSECURITY_DESCRIPTOR'),
-  \ cppapi#field('SecurityInformation', 'SECURITY_INFORMATION'),
-  \ cppapi#field('DeviceObject', 'PDEVICE_OBJECT'),
-  \ cppapi#field('Vpb', 'PVPB'),
-  \ cppapi#field('DeviceObject', 'PDEVICE_OBJECT'),
-  \ cppapi#field('Vpb', 'PVPB'),
-  \ cppapi#field('_SCSI_REQUEST_BLOCK', 'struct'),
-  \ cppapi#field('Length', 'ULONG'),
-  \ cppapi#field('SidList', 'PFILE_GET_QUOTA_INFORMATION'),
-  \ cppapi#field('SidListLength', 'ULONG'),
-  \ cppapi#field('StartSid', 'PSID'),
-  \ cppapi#field('Length', 'ULONG'),
-  \ cppapi#field('Type', 'DEVICE_RELATION_TYPE'),
-  \ cppapi#field('Interface', 'PINTERFACE'),
-  \ cppapi#field('InterfaceSpecificData', 'PVOID'),
-  \ cppapi#field('GUID', 'CONST'),
-  \ cppapi#field('Size', 'USHORT'),
-  \ cppapi#field('Version', 'USHORT'),
-  \ cppapi#field('Capabilities', 'PDEVICE_CAPABILITIES'),
-  \ cppapi#field('IoResourceRequirementList', 'PIO_RESOURCE_REQUIREMENTS_LIST'),
-  \ cppapi#field('Buffer', 'PVOID'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
-  \ cppapi#field('Offset', 'ULONG'),
-  \ cppapi#field('WhichSpace', 'ULONG'),
-  \ cppapi#field('Lock', 'BOOLEAN'),
-  \ cppapi#field('IdType', 'BUS_QUERY_ID_TYPE'),
-  \ cppapi#field('DeviceTextType', 'DEVICE_TEXT_TYPE'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'LCID'),
-  \ cppapi#field('InPath', 'BOOLEAN'),
-  \ cppapi#field('Reserved[3]', 'BOOLEAN'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'DEVICE_USAGE_NOTIFICATION_TYPE'),
-  \ cppapi#field('PowerState', 'SYSTEM_POWER_STATE'),
-  \ cppapi#field('PowerSequence', 'PPOWER_SEQUENCE'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'POWER_ACTION'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'POWER_STATE'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'POWER_STATE_TYPE'),
-  \ cppapi#field('SystemContext', 'ULONG'),
-  \ cppapi#field('SystemPowerStateContext', 'SYSTEM_POWER_STATE_CONTEXT'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'POWER_ACTION'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'POWER_STATE'),
-  \ cppapi#field('SystemContext', 'ULONG'),
-  \ cppapi#field('POINTER_ALIGNMENT', 'POWER_STATE_TYPE'),
-  \ cppapi#field('AllocatedResources', 'PCM_RESOURCE_LIST'),
-  \ cppapi#field('AllocatedResourcesTranslated', 'PCM_RESOURCE_LIST'),
-  \ cppapi#field('Buffer', 'PVOID'),
-  \ cppapi#field('BufferSize', 'ULONG'),
-  \ cppapi#field('DataPath', 'PVOID'),
-  \ cppapi#field('ProviderId', 'ULONG_PTR'),
-  \ cppapi#field('Argument1', 'PVOID'),
-  \ cppapi#field('Argument2', 'PVOID'),
-  \ cppapi#field('Argument3', 'PVOID'),
-  \ cppapi#field('Argument4', 'PVOID'),
-  \ ])
-
-call cppapi#struct('DEVOBJ_EXTENSION', '_DEVOBJ_EXTENSION', [])
-call cppapi#struct('PDEVOBJ_EXTENSION', '_DEVOBJ_EXTENSION', [])
-call cppapi#struct('_DEVOBJ_EXTENSION', '', [
-  \ cppapi#field('DeviceObject', 'PDEVICE_OBJECT'),
-  \ cppapi#field('Size', 'USHORT'),
-  \ cppapi#field('Type', 'CSHORT'),
-  \ ])
-
-call cppapi#struct('KDPC', '_KDPC', [])
-call cppapi#struct('PKDPC', '_KDPC', [])
-call cppapi#struct('_KDPC', '', [
-  \ cppapi#field('DeferredContext', 'PVOID'),
-  \ cppapi#field('DeferredRoutine', 'PKDEFERRED_ROUTINE'),
-  \ cppapi#field('PVOID', '__volatile'),
-  \ cppapi#field('DpcListEntry', 'LIST_ENTRY'),
-  \ cppapi#field('Importance', 'UCHAR'),
-  \ cppapi#field('USHORT', 'volatile'),
-  \ cppapi#field('SystemArgument1', 'PVOID'),
-  \ cppapi#field('SystemArgument2', 'PVOID'),
-  \ cppapi#field('Type', 'UCHAR'),
-  \ ])
-
-call cppapi#struct('DRIVER_OBJECT', '_DRIVER_OBJECT', [])
-call cppapi#struct('PDRIVER_OBJECT', '_DRIVER_OBJECT', [])
-call cppapi#struct('_DRIVER_OBJECT', '', [
-  \ cppapi#field('DeviceObject', 'PDEVICE_OBJECT'),
-  \ cppapi#field('DriverExtension', 'PDRIVER_EXTENSION'),
-  \ cppapi#field('DriverInit', 'PDRIVER_INITIALIZE'),
-  \ cppapi#field('DriverName', 'UNICODE_STRING'),
-  \ cppapi#field('DriverSection', 'PVOID'),
-  \ cppapi#field('DriverSize', 'ULONG'),
-  \ cppapi#field('DriverStart', 'PVOID'),
-  \ cppapi#field('DriverStartIo', 'PDRIVER_STARTIO'),
-  \ cppapi#field('DriverUnload', 'PDRIVER_UNLOAD'),
-  \ cppapi#field('FastIoDispatch', 'PFAST_IO_DISPATCH'),
-  \ cppapi#field('Flags', 'ULONG'),
-  \ cppapi#field('HardwareDatabase', 'PUNICODE_STRING'),
-  \ cppapi#field('MajorFunction[IRP_MJ_MAXIMUM_FUNCTION', 'PDRIVER_DISPATCH'),
-  \ cppapi#field('Size', 'CSHORT'),
-  \ cppapi#field('Type', 'CSHORT'),
-  \ ])
-
-call cppapi#struct('KSPIN_LOCK_QUEUE', '_KSPIN_LOCK_QUEUE', [])
-call cppapi#struct('PKSPIN_LOCK_QUEUE', '_KSPIN_LOCK_QUEUE', [])
-call cppapi#struct('_KSPIN_LOCK_QUEUE', '', [
-  \ cppapi#field('volatile', 'PKSPIN_LOCK'),
-  \ cppapi#field('_KSPIN_LOCK_QUEUE', 'struct'),
-  \ ])
-
-call cppapi#struct('MDL', '_MDL', [])
-call cppapi#struct('PMDL', '_MDL', [])
-call cppapi#struct('_MDL', '', [
-  \ ])
-
-call cppapi#struct('AST_IO_MDL_READ', 'FAST_IO_MDL_READ', [])
-call cppapi#struct('PAST_IO_MDL_READ', 'FAST_IO_MDL_READ', [])
-call cppapi#struct('FAST_IO_MDL_READ', '', [
-  \ ])
-
-call cppapi#struct('AST_IO_MDL_READ_COMPLETE', 'FAST_IO_MDL_READ_COMPLETE', [])
-call cppapi#struct('PAST_IO_MDL_READ_COMPLETE', 'FAST_IO_MDL_READ_COMPLETE', [])
-call cppapi#struct('FAST_IO_MDL_READ_COMPLETE', '', [
-  \ ])
-
-call cppapi#struct('AST_IO_MDL_READ_COMPLETE_COMPRESSED', 'FAST_IO_MDL_READ_COMPLETE_COMPRESSED', [])
-call cppapi#struct('PAST_IO_MDL_READ_COMPLETE_COMPRESSED', 'FAST_IO_MDL_READ_COMPLETE_COMPRESSED', [])
-call cppapi#struct('FAST_IO_MDL_READ_COMPLETE_COMPRESSED', '', [
-  \ ])
-
-call cppapi#struct('AST_IO_MDL_WRITE_COMPLETE', 'FAST_IO_MDL_WRITE_COMPLETE', [])
-call cppapi#struct('PAST_IO_MDL_WRITE_COMPLETE', 'FAST_IO_MDL_WRITE_COMPLETE', [])
-call cppapi#struct('FAST_IO_MDL_WRITE_COMPLETE', '', [
-  \ ])
-
-call cppapi#struct('AST_IO_MDL_WRITE_COMPLETE_COMPRESSED', 'FAST_IO_MDL_WRITE_COMPLETE_COMPRESSED', [])
-call cppapi#struct('PAST_IO_MDL_WRITE_COMPLETE_COMPRESSED', 'FAST_IO_MDL_WRITE_COMPLETE_COMPRESSED', [])
-call cppapi#struct('FAST_IO_MDL_WRITE_COMPLETE_COMPRESSED', '', [
-  \ ])
-
-call cppapi#struct('AST_IO_PREPARE_MDL_WRITE', 'FAST_IO_PREPARE_MDL_WRITE', [])
-call cppapi#struct('PAST_IO_PREPARE_MDL_WRITE', 'FAST_IO_PREPARE_MDL_WRITE', [])
-call cppapi#struct('FAST_IO_PREPARE_MDL_WRITE', '', [
-  \ ])
-
-call cppapi#struct('FAST_IO_MDL_READ', 'PFAST_IO_MDL_READ', [])
-call cppapi#struct('PFAST_IO_MDL_READ', 'PFAST_IO_MDL_READ', [])
-call cppapi#struct('PFAST_IO_MDL_READ', '', [
-  \ ])
-
-call cppapi#struct('FAST_IO_MDL_READ_COMPLETE', 'PFAST_IO_MDL_READ_COMPLETE', [])
-call cppapi#struct('PFAST_IO_MDL_READ_COMPLETE', 'PFAST_IO_MDL_READ_COMPLETE', [])
-call cppapi#struct('PFAST_IO_MDL_READ_COMPLETE', '', [
-  \ ])
-
-call cppapi#struct('FAST_IO_MDL_READ_COMPLETE_COMPRESSED', 'PFAST_IO_MDL_READ_COMPLETE_COMPRESSED', [])
-call cppapi#struct('PFAST_IO_MDL_READ_COMPLETE_COMPRESSED', 'PFAST_IO_MDL_READ_COMPLETE_COMPRESSED', [])
-call cppapi#struct('PFAST_IO_MDL_READ_COMPLETE_COMPRESSED', '', [
-  \ ])
-
-call cppapi#struct('FAST_IO_MDL_WRITE_COMPLETE', 'PFAST_IO_MDL_WRITE_COMPLETE', [])
-call cppapi#struct('PFAST_IO_MDL_WRITE_COMPLETE', 'PFAST_IO_MDL_WRITE_COMPLETE', [])
-call cppapi#struct('PFAST_IO_MDL_WRITE_COMPLETE', '', [
-  \ ])
-
-call cppapi#struct('FAST_IO_MDL_WRITE_COMPLETE_COMPRESSED', 'PFAST_IO_MDL_WRITE_COMPLETE_COMPRESSED', [])
-call cppapi#struct('PFAST_IO_MDL_WRITE_COMPLETE_COMPRESSED', 'PFAST_IO_MDL_WRITE_COMPLETE_COMPRESSED', [])
-call cppapi#struct('PFAST_IO_MDL_WRITE_COMPLETE_COMPRESSED', '', [
-  \ ])
-
-call cppapi#struct('FAST_IO_PREPARE_MDL_WRITE', 'PFAST_IO_PREPARE_MDL_WRITE', [])
-call cppapi#struct('PFAST_IO_PREPARE_MDL_WRITE', 'PFAST_IO_PREPARE_MDL_WRITE', [])
-call cppapi#struct('PFAST_IO_PREPARE_MDL_WRITE', '', [
-  \ cppapi#field('ByteCount', 'ULONG'),
-  \ cppapi#field('ByteOffset', 'ULONG'),
-  \ cppapi#field('MappedSystemVa', 'PVOID'),
-  \ cppapi#field('MdlFlags', 'CSHORT'),
-  \ cppapi#field('_MDL', 'struct'),
-  \ cppapi#field('_EPROCESS', 'struct'),
-  \ cppapi#field('Size', 'CSHORT'),
-  \ cppapi#field('StartVa', 'PVOID'),
-  \ ])
-
 call cppapi#struct('ACCESS_STATE', '_ACCESS_STATE', [])
 call cppapi#struct('PACCESS_STATE', '_ACCESS_STATE', [])
 call cppapi#struct('_ACCESS_STATE', '', [
@@ -375,7 +12,7 @@ call cppapi#struct('_ACCESS_STATE', '', [
   \ cppapi#field('OperationID', 'LUID'),
   \ cppapi#field('OriginalDesiredAccess', 'ACCESS_MASK'),
   \ cppapi#field('PreviouslyGrantedAccess', 'ACCESS_MASK'),
-  \ cppapi#field('Privileges', '}'),
+  \ cppapi#field('Privileges', '_ACCESS_STATE::__anon186'),
   \ cppapi#field('PrivilegesAllocated', 'BOOLEAN'),
   \ cppapi#field('RemainingDesiredAccess', 'ACCESS_MASK'),
   \ cppapi#field('SecurityDescriptor', 'PSECURITY_DESCRIPTOR'),
@@ -385,283 +22,9 @@ call cppapi#struct('_ACCESS_STATE', '', [
   \ cppapi#field('PrivilegeSet', 'PRIVILEGE_SET'),
   \ ])
 
-call cppapi#struct('OUNTED_REASON_CONTEXT', 'COUNTED_REASON_CONTEXT', [])
-call cppapi#struct('POUNTED_REASON_CONTEXT', 'COUNTED_REASON_CONTEXT', [])
-call cppapi#struct('COUNTED_REASON_CONTEXT', '_COUNTED_REASON_CONTEXT', [
-  \ ])
-
-call cppapi#struct('O_COMPLETION_CONTEXT', 'IO_COMPLETION_CONTEXT', [])
-call cppapi#struct('PO_COMPLETION_CONTEXT', 'IO_COMPLETION_CONTEXT', [])
-call cppapi#struct('IO_COMPLETION_CONTEXT', '_IO_COMPLETION_CONTEXT', [
-  \ ])
-
-call cppapi#struct('O_SECURITY_CONTEXT', 'IO_SECURITY_CONTEXT', [])
-call cppapi#struct('PO_SECURITY_CONTEXT', 'IO_SECURITY_CONTEXT', [])
-call cppapi#struct('IO_SECURITY_CONTEXT', '_IO_SECURITY_CONTEXT', [
-  \ ])
-
-call cppapi#struct('COUNTED_REASON_CONTEXT', 'PCOUNTED_REASON_CONTEXT', [])
-call cppapi#struct('PCOUNTED_REASON_CONTEXT', 'PCOUNTED_REASON_CONTEXT', [])
-call cppapi#struct('PCOUNTED_REASON_CONTEXT', '_COUNTED_REASON_CONTEXT', [
-  \ ])
-
-call cppapi#struct('IO_COMPLETION_CONTEXT', 'PIO_COMPLETION_CONTEXT', [])
-call cppapi#struct('PIO_COMPLETION_CONTEXT', 'PIO_COMPLETION_CONTEXT', [])
-call cppapi#struct('PIO_COMPLETION_CONTEXT', '_IO_COMPLETION_CONTEXT', [
-  \ ])
-
-call cppapi#struct('IO_SECURITY_CONTEXT', 'PIO_SECURITY_CONTEXT', [])
-call cppapi#struct('PIO_SECURITY_CONTEXT', 'PIO_SECURITY_CONTEXT', [])
-call cppapi#struct('PIO_SECURITY_CONTEXT', '_IO_SECURITY_CONTEXT', [
-  \ ])
-
-call cppapi#struct('KIPI_CONTEXT', 'PKIPI_CONTEXT', [])
-call cppapi#struct('PKIPI_CONTEXT', 'PKIPI_CONTEXT', [])
-call cppapi#struct('PKIPI_CONTEXT', '', [
-  \ ])
-
-call cppapi#struct('REG_CALLBACK_CONTEXT_CLEANUP_INFORMATION', 'PREG_CALLBACK_CONTEXT_CLEANUP_INFORMATION', [])
-call cppapi#struct('PREG_CALLBACK_CONTEXT_CLEANUP_INFORMATION', 'PREG_CALLBACK_CONTEXT_CLEANUP_INFORMATION', [])
-call cppapi#struct('PREG_CALLBACK_CONTEXT_CLEANUP_INFORMATION', '_REG_CALLBACK_CONTEXT_CLEANUP_INFORMATION', [
-  \ ])
-
-call cppapi#struct('SECURITY_CONTEXT_TRACKING_MODE', 'PSECURITY_CONTEXT_TRACKING_MODE', [])
-call cppapi#struct('PSECURITY_CONTEXT_TRACKING_MODE', 'PSECURITY_CONTEXT_TRACKING_MODE', [])
-call cppapi#struct('PSECURITY_CONTEXT_TRACKING_MODE', '', [
-  \ ])
-
-call cppapi#struct('SECURITY_SUBJECT_CONTEXT', 'PSECURITY_SUBJECT_CONTEXT', [])
-call cppapi#struct('PSECURITY_SUBJECT_CONTEXT', 'PSECURITY_SUBJECT_CONTEXT', [])
-call cppapi#struct('PSECURITY_SUBJECT_CONTEXT', '_SECURITY_SUBJECT_CONTEXT', [
-  \ ])
-
-call cppapi#struct('SYSTEM_POWER_STATE_CONTEXT', 'PSYSTEM_POWER_STATE_CONTEXT', [])
-call cppapi#struct('PSYSTEM_POWER_STATE_CONTEXT', 'PSYSTEM_POWER_STATE_CONTEXT', [])
-call cppapi#struct('PSYSTEM_POWER_STATE_CONTEXT', '_SYSTEM_POWER_STATE_CONTEXT', [
-  \ ])
-
-call cppapi#struct('WAIT_CONTEXT_BLOCK', 'PWAIT_CONTEXT_BLOCK', [])
-call cppapi#struct('PWAIT_CONTEXT_BLOCK', 'PWAIT_CONTEXT_BLOCK', [])
-call cppapi#struct('PWAIT_CONTEXT_BLOCK', '_WAIT_CONTEXT_BLOCK', [
-  \ ])
-
-call cppapi#struct('XSTATE_CONTEXT', 'PXSTATE_CONTEXT', [])
-call cppapi#struct('PXSTATE_CONTEXT', 'PXSTATE_CONTEXT', [])
-call cppapi#struct('PXSTATE_CONTEXT', '_XSTATE_CONTEXT', [
-  \ ])
-
-call cppapi#struct('EG_CALLBACK_CONTEXT_CLEANUP_INFORMATION', 'REG_CALLBACK_CONTEXT_CLEANUP_INFORMATION', [])
-call cppapi#struct('PEG_CALLBACK_CONTEXT_CLEANUP_INFORMATION', 'REG_CALLBACK_CONTEXT_CLEANUP_INFORMATION', [])
-call cppapi#struct('REG_CALLBACK_CONTEXT_CLEANUP_INFORMATION', '_REG_CALLBACK_CONTEXT_CLEANUP_INFORMATION', [
-  \ ])
-
-call cppapi#struct('ECURITY_CONTEXT_TRACKING_MODE', 'SECURITY_CONTEXT_TRACKING_MODE', [])
-call cppapi#struct('PECURITY_CONTEXT_TRACKING_MODE', 'SECURITY_CONTEXT_TRACKING_MODE', [])
-call cppapi#struct('SECURITY_CONTEXT_TRACKING_MODE', '', [
-  \ ])
-
-call cppapi#struct('ECURITY_SUBJECT_CONTEXT', 'SECURITY_SUBJECT_CONTEXT', [])
-call cppapi#struct('PECURITY_SUBJECT_CONTEXT', 'SECURITY_SUBJECT_CONTEXT', [])
-call cppapi#struct('SECURITY_SUBJECT_CONTEXT', '_SECURITY_SUBJECT_CONTEXT', [
-  \ ])
-
-call cppapi#struct('YSTEM_POWER_STATE_CONTEXT', 'SYSTEM_POWER_STATE_CONTEXT', [])
-call cppapi#struct('PYSTEM_POWER_STATE_CONTEXT', 'SYSTEM_POWER_STATE_CONTEXT', [])
-call cppapi#struct('SYSTEM_POWER_STATE_CONTEXT', '_SYSTEM_POWER_STATE_CONTEXT', [
-  \ ])
-
-call cppapi#struct('AIT_CONTEXT_BLOCK', 'WAIT_CONTEXT_BLOCK', [])
-call cppapi#struct('PAIT_CONTEXT_BLOCK', 'WAIT_CONTEXT_BLOCK', [])
-call cppapi#struct('WAIT_CONTEXT_BLOCK', '_WAIT_CONTEXT_BLOCK', [
-  \ ])
-
-call cppapi#struct('STATE_CONTEXT', 'XSTATE_CONTEXT', [])
-call cppapi#struct('PSTATE_CONTEXT', 'XSTATE_CONTEXT', [])
-call cppapi#struct('XSTATE_CONTEXT', '_XSTATE_CONTEXT', [
-  \ ])
-
-call cppapi#struct('CONTEXT_CHUNK', '_CONTEXT_CHUNK', [])
-call cppapi#struct('PCONTEXT_CHUNK', '_CONTEXT_CHUNK', [])
-call cppapi#struct('_CONTEXT_CHUNK', '', [
-  \ cppapi#field('Length', 'ULONG'),
-  \ cppapi#field('Offset', 'LONG'),
-  \ ])
-
-call cppapi#struct('CONTEXT_EX', '_CONTEXT_EX', [])
-call cppapi#struct('PCONTEXT_EX', '_CONTEXT_EX', [])
-call cppapi#struct('_CONTEXT_EX', '', [
-  \ cppapi#field('All', 'CONTEXT_CHUNK'),
-  \ cppapi#field('Legacy', 'CONTEXT_CHUNK'),
-  \ cppapi#field('XState', 'CONTEXT_CHUNK'),
-  \ ])
-
-call cppapi#struct('COUNTED_REASON_CONTEXT', '_COUNTED_REASON_CONTEXT', [])
-call cppapi#struct('PCOUNTED_REASON_CONTEXT', '_COUNTED_REASON_CONTEXT', [])
-call cppapi#struct('_COUNTED_REASON_CONTEXT', '', [
-  \ cppapi#field('DUMMYUNIONNAME', '}'),
-  \ cppapi#field('Flags', 'ULONG'),
-  \ cppapi#field('Version', 'ULONG'),
-  \ cppapi#field('DUMMYSTRUCTNAME', '}'),
-  \ cppapi#field('SimpleString', 'UNICODE_STRING'),
-  \ cppapi#field('__field_ecount(StringCount)', 'PUNICODE_STRING'),
-  \ cppapi#field('ResourceFileName', 'UNICODE_STRING'),
-  \ cppapi#field('ResourceReasonId', 'USHORT'),
-  \ cppapi#field('StringCount', 'ULONG'),
-  \ ])
-
-call cppapi#struct('IO_COMPLETION_CONTEXT', '_IO_COMPLETION_CONTEXT', [])
-call cppapi#struct('PIO_COMPLETION_CONTEXT', '_IO_COMPLETION_CONTEXT', [])
-call cppapi#struct('_IO_COMPLETION_CONTEXT', '', [
-  \ cppapi#field('Key', 'PVOID'),
-  \ cppapi#field('Port', 'PVOID'),
-  \ ])
-
-call cppapi#struct('IO_SECURITY_CONTEXT', '_IO_SECURITY_CONTEXT', [])
-call cppapi#struct('PIO_SECURITY_CONTEXT', '_IO_SECURITY_CONTEXT', [])
-call cppapi#struct('_IO_SECURITY_CONTEXT', '', [
-  \ cppapi#field('AccessState', 'PACCESS_STATE'),
-  \ cppapi#field('DesiredAccess', 'ACCESS_MASK'),
-  \ cppapi#field('FullCreateOptions', 'ULONG'),
-  \ cppapi#field('SecurityQos', 'PSECURITY_QUALITY_OF_SERVICE'),
-  \ ])
-
-call cppapi#struct('REG_CALLBACK_CONTEXT_CLEANUP_INFORMATION', '_REG_CALLBACK_CONTEXT_CLEANUP_INFORMATION', [])
-call cppapi#struct('PREG_CALLBACK_CONTEXT_CLEANUP_INFORMATION', '_REG_CALLBACK_CONTEXT_CLEANUP_INFORMATION', [])
-call cppapi#struct('_REG_CALLBACK_CONTEXT_CLEANUP_INFORMATION', '', [
-  \ cppapi#field('Object', 'PVOID'),
-  \ cppapi#field('ObjectContext', 'PVOID'),
-  \ cppapi#field('Reserved', 'PVOID'),
-  \ ])
-
-call cppapi#struct('SECURITY_SUBJECT_CONTEXT', '_SECURITY_SUBJECT_CONTEXT', [])
-call cppapi#struct('PSECURITY_SUBJECT_CONTEXT', '_SECURITY_SUBJECT_CONTEXT', [])
-call cppapi#struct('_SECURITY_SUBJECT_CONTEXT', '', [
-  \ cppapi#field('ClientToken', 'PACCESS_TOKEN'),
-  \ cppapi#field('ImpersonationLevel', 'SECURITY_IMPERSONATION_LEVEL'),
-  \ cppapi#field('PrimaryToken', 'PACCESS_TOKEN'),
-  \ cppapi#field('ProcessAuditId', 'PVOID'),
-  \ ])
-
-call cppapi#struct('SYSTEM_POWER_STATE_CONTEXT', '_SYSTEM_POWER_STATE_CONTEXT', [])
-call cppapi#struct('PSYSTEM_POWER_STATE_CONTEXT', '_SYSTEM_POWER_STATE_CONTEXT', [])
-call cppapi#struct('_SYSTEM_POWER_STATE_CONTEXT', '', [
-  \ cppapi#field('DUMMYUNIONNAME', '}'),
-  \ cppapi#field('ContextAsUlong', 'ULONG'),
-  \ cppapi#field('DUMMYSTRUCTNAME', '}'),
-  \ cppapi#field('CurrentSystemState', 'ULONG'),
-  \ cppapi#field('EffectiveSystemState', 'ULONG'),
-  \ cppapi#field('IgnoreHibernationPath', 'ULONG'),
-  \ cppapi#field('PseudoTransition', 'ULONG'),
-  \ cppapi#field('Reserved1', 'ULONG'),
-  \ cppapi#field('Reserved2', 'ULONG'),
-  \ cppapi#field('TargetSystemState', 'ULONG'),
-  \ ])
-
-call cppapi#struct('WAIT_CONTEXT_BLOCK', '_WAIT_CONTEXT_BLOCK', [])
-call cppapi#struct('PWAIT_CONTEXT_BLOCK', '_WAIT_CONTEXT_BLOCK', [])
-call cppapi#struct('_WAIT_CONTEXT_BLOCK', '', [
-  \ cppapi#field('BufferChainingDpc', 'PKDPC'),
-  \ cppapi#field('CurrentIrp', 'PVOID'),
-  \ cppapi#field('DeviceContext', 'PVOID'),
-  \ cppapi#field('DeviceObject', 'PVOID'),
-  \ cppapi#field('DeviceRoutine', 'PDRIVER_CONTROL'),
-  \ cppapi#field('NumberOfMapRegisters', 'ULONG'),
-  \ cppapi#field('WaitQueueEntry', 'KDEVICE_QUEUE_ENTRY'),
-  \ ])
-
-call cppapi#struct('XSTATE_CONTEXT', '_XSTATE_CONTEXT', [])
-call cppapi#struct('PXSTATE_CONTEXT', '_XSTATE_CONTEXT', [])
-call cppapi#struct('_XSTATE_CONTEXT', '', [
-  \ cppapi#field('PXSAVE_AREA', '__field_bcount_opt(Length)'),
-  \ cppapi#field('Buffer', 'PVOID'),
-  \ cppapi#field('Length', 'ULONG'),
-  \ cppapi#field('Mask', 'ULONG64'),
-  \ cppapi#field('Reserved1', 'ULONG'),
-  \ cppapi#field('Reserved2', 'ULONG'),
-  \ cppapi#field('Reserved3', 'ULONG'),
-  \ ])
-
-call cppapi#struct('FILE_OBJECT', '_FILE_OBJECT', [])
-call cppapi#struct('PFILE_OBJECT', '_FILE_OBJECT', [])
-call cppapi#struct('_FILE_OBJECT', '', [
-  \ cppapi#field('ULONG', '__volatile'),
-  \ cppapi#field('PIO_COMPLETION_CONTEXT', '__volatile'),
-  \ cppapi#field('CurrentByteOffset', 'LARGE_INTEGER'),
-  \ cppapi#field('DeleteAccess', 'BOOLEAN'),
-  \ cppapi#field('DeletePending', 'BOOLEAN'),
-  \ cppapi#field('DeviceObject', 'PDEVICE_OBJECT'),
-  \ cppapi#field('Event', 'KEVENT'),
-  \ cppapi#field('FileName', 'UNICODE_STRING'),
-  \ cppapi#field('PVOID', '__volatile'),
-  \ cppapi#field('FinalStatus', 'NTSTATUS'),
-  \ cppapi#field('Flags', 'ULONG'),
-  \ cppapi#field('FsContext', 'PVOID'),
-  \ cppapi#field('FsContext2', 'PVOID'),
-  \ cppapi#field('IrpList', 'LIST_ENTRY'),
-  \ cppapi#field('IrpListLock', 'KSPIN_LOCK'),
-  \ cppapi#field('LastLock', 'PVOID'),
-  \ cppapi#field('Lock', 'KEVENT'),
-  \ cppapi#field('LockOperation', 'BOOLEAN'),
-  \ cppapi#field('PrivateCacheMap', 'PVOID'),
-  \ cppapi#field('ReadAccess', 'BOOLEAN'),
-  \ cppapi#field('_FILE_OBJECT', 'struct'),
-  \ cppapi#field('SectionObjectPointer', 'PSECTION_OBJECT_POINTERS'),
-  \ cppapi#field('SharedDelete', 'BOOLEAN'),
-  \ cppapi#field('SharedRead', 'BOOLEAN'),
-  \ cppapi#field('SharedWrite', 'BOOLEAN'),
-  \ cppapi#field('Size', 'CSHORT'),
-  \ cppapi#field('Type', 'CSHORT'),
-  \ cppapi#field('Vpb', 'PVPB'),
-  \ cppapi#field('ULONG', '__volatile'),
-  \ cppapi#field('WriteAccess', 'BOOLEAN'),
-  \ ])
-
-call cppapi#struct('LOOKASIDE_LIST_EX', '_LOOKASIDE_LIST_EX', [])
-call cppapi#struct('PLOOKASIDE_LIST_EX', '_LOOKASIDE_LIST_EX', [])
-call cppapi#struct('_LOOKASIDE_LIST_EX', '', [
-  \ cppapi#field('L', 'GENERAL_LOOKASIDE_POOL'),
-  \ ])
-
-call cppapi#struct('SE_ADT_OBJECT_TYPE', 'PSE_ADT_OBJECT_TYPE', [])
-call cppapi#struct('PSE_ADT_OBJECT_TYPE', 'PSE_ADT_OBJECT_TYPE', [])
-call cppapi#struct('PSE_ADT_OBJECT_TYPE', '_SE_ADT_OBJECT_TYPE', [
-  \ ])
-
-call cppapi#struct('E_ADT_OBJECT_TYPE', 'SE_ADT_OBJECT_TYPE', [])
-call cppapi#struct('PE_ADT_OBJECT_TYPE', 'SE_ADT_OBJECT_TYPE', [])
-call cppapi#struct('SE_ADT_OBJECT_TYPE', '_SE_ADT_OBJECT_TYPE', [
-  \ ])
-
-call cppapi#struct('SE_ADT_OBJECT_TYPE', '_SE_ADT_OBJECT_TYPE', [])
-call cppapi#struct('PSE_ADT_OBJECT_TYPE', '_SE_ADT_OBJECT_TYPE', [])
-call cppapi#struct('_SE_ADT_OBJECT_TYPE', '', [
-  \ cppapi#field('AccessMask', 'ACCESS_MASK'),
-  \ cppapi#field('Flags', 'USHORT'),
-  \ cppapi#field('Level', 'USHORT'),
-  \ cppapi#field('ObjectType', 'GUID'),
-  \ ])
-
-call cppapi#struct('SECURITY_QUALITY_OF_SERVICE', '_SECURITY_QUALITY_OF_SERVICE', [])
-call cppapi#struct('PSECURITY_QUALITY_OF_SERVICE', '_SECURITY_QUALITY_OF_SERVICE', [])
-call cppapi#struct('_SECURITY_QUALITY_OF_SERVICE', '', [
-  \ cppapi#field('ContextTrackingMode', 'SECURITY_CONTEXT_TRACKING_MODE'),
-  \ cppapi#field('EffectiveOnly', 'BOOLEAN'),
-  \ cppapi#field('ImpersonationLevel', 'SECURITY_IMPERSONATION_LEVEL'),
-  \ cppapi#field('Length', 'ULONG'),
-  \ ])
-
-call cppapi#struct('VPB', '_VPB', [])
-call cppapi#struct('PVPB', '_VPB', [])
-call cppapi#struct('_VPB', '', [
-  \ cppapi#field('_DEVICE_OBJECT', 'struct'),
-  \ cppapi#field('Flags', 'USHORT'),
-  \ cppapi#field('_DEVICE_OBJECT', 'struct'),
-  \ cppapi#field('ReferenceCount', 'ULONG'),
-  \ cppapi#field('SerialNumber', 'ULONG'),
-  \ cppapi#field('Size', 'CSHORT'),
-  \ cppapi#field('Type', 'CSHORT'),
-  \ cppapi#field('VolumeLabel[MAXIMUM_VOLUME_LABEL_LENGTH', 'WCHAR'),
-  \ cppapi#field('VolumeLabelLength', 'USHORT'),
+call cppapi#struct('_ACCESS_STATE::__anon186', '', [
+  \ cppapi#field('InitialPrivilegeSet', 'INITIAL_PRIVILEGE_SET'),
+  \ cppapi#field('PrivilegeSet', 'PRIVILEGE_SET'),
   \ ])
 
 call cppapi#struct('ACL', '_ACL', [])
@@ -837,18 +200,18 @@ call cppapi#struct('_CM_PARTIAL_RESOURCE_DESCRIPTOR', '', [
   \ cppapi#field('Flags', 'USHORT'),
   \ cppapi#field('ShareDisposition', 'UCHAR'),
   \ cppapi#field('Type', 'UCHAR'),
-  \ cppapi#field('BusNumber', '}'),
-  \ cppapi#field('DevicePrivate', '}'),
-  \ cppapi#field('DeviceSpecificData', '}'),
-  \ cppapi#field('Dma', '}'),
-  \ cppapi#field('Generic', '}'),
-  \ cppapi#field('Interrupt', '}'),
-  \ cppapi#field('Memory', '}'),
-  \ cppapi#field('Memory40', '}'),
-  \ cppapi#field('Memory48', '}'),
-  \ cppapi#field('Memory64', '}'),
-  \ cppapi#field('MessageInterrupt', '}'),
-  \ cppapi#field('Port', '}'),
+  \ cppapi#field('BusNumber', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon145'),
+  \ cppapi#field('DevicePrivate', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon144'),
+  \ cppapi#field('DeviceSpecificData', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon146'),
+  \ cppapi#field('Dma', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon143'),
+  \ cppapi#field('Generic', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon135'),
+  \ cppapi#field('Interrupt', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon137'),
+  \ cppapi#field('Memory', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon142'),
+  \ cppapi#field('Memory40', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon147'),
+  \ cppapi#field('Memory48', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon148'),
+  \ cppapi#field('Memory64', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon149'),
+  \ cppapi#field('MessageInterrupt', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon138'),
+  \ cppapi#field('Port', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon136'),
   \ cppapi#field('Length', 'ULONG'),
   \ cppapi#field('Start', 'PHYSICAL_ADDRESS'),
   \ cppapi#field('Length', 'ULONG'),
@@ -857,9 +220,9 @@ call cppapi#struct('_CM_PARTIAL_RESOURCE_DESCRIPTOR', '', [
   \ cppapi#field('Group', 'USHORT'),
   \ cppapi#field('Level', 'USHORT'),
   \ cppapi#field('Vector', 'ULONG'),
-  \ cppapi#field('DUMMYUNIONNAME', '}'),
-  \ cppapi#field('Raw', '}'),
-  \ cppapi#field('Translated', '}'),
+  \ cppapi#field('DUMMYUNIONNAME', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon138::__anon139'),
+  \ cppapi#field('Raw', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon138::__anon139::__anon140'),
+  \ cppapi#field('Translated', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon138::__anon139::__anon141'),
   \ cppapi#field('Affinity', 'KAFFINITY'),
   \ cppapi#field('Group', 'USHORT'),
   \ cppapi#field('MessageCount', 'USHORT'),
@@ -886,7 +249,72 @@ call cppapi#struct('_CM_PARTIAL_RESOURCE_DESCRIPTOR', '', [
   \ cppapi#field('Start', 'PHYSICAL_ADDRESS'),
   \ cppapi#field('Length64', 'ULONG'),
   \ cppapi#field('Start', 'PHYSICAL_ADDRESS'),
-  \ cppapi#field('u', '}'),
+  \ cppapi#field('u', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134'),
+  \ ])
+
+call cppapi#struct('_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134', '', [
+  \ cppapi#field('BusNumber', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon145'),
+  \ cppapi#field('DevicePrivate', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon144'),
+  \ cppapi#field('DeviceSpecificData', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon146'),
+  \ cppapi#field('Dma', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon143'),
+  \ cppapi#field('Generic', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon135'),
+  \ cppapi#field('Interrupt', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon137'),
+  \ cppapi#field('Memory', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon142'),
+  \ cppapi#field('Memory40', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon147'),
+  \ cppapi#field('Memory48', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon148'),
+  \ cppapi#field('Memory64', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon149'),
+  \ cppapi#field('MessageInterrupt', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon138'),
+  \ cppapi#field('Port', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon136'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('Start', 'PHYSICAL_ADDRESS'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('Start', 'PHYSICAL_ADDRESS'),
+  \ cppapi#field('Affinity', 'KAFFINITY'),
+  \ cppapi#field('Group', 'USHORT'),
+  \ cppapi#field('Level', 'USHORT'),
+  \ cppapi#field('Vector', 'ULONG'),
+  \ cppapi#field('DUMMYUNIONNAME', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon138::__anon139'),
+  \ cppapi#field('Raw', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon138::__anon139::__anon140'),
+  \ cppapi#field('Translated', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon138::__anon139::__anon141'),
+  \ cppapi#field('Affinity', 'KAFFINITY'),
+  \ cppapi#field('Group', 'USHORT'),
+  \ cppapi#field('MessageCount', 'USHORT'),
+  \ cppapi#field('Vector', 'ULONG'),
+  \ cppapi#field('Affinity', 'KAFFINITY'),
+  \ cppapi#field('Group', 'USHORT'),
+  \ cppapi#field('Level', 'USHORT'),
+  \ cppapi#field('Vector', 'ULONG'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('Start', 'PHYSICAL_ADDRESS'),
+  \ cppapi#field('Channel', 'ULONG'),
+  \ cppapi#field('Port', 'ULONG'),
+  \ cppapi#field('Reserved1', 'ULONG'),
+  \ cppapi#field('Data[3]', 'ULONG'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('Reserved', 'ULONG'),
+  \ cppapi#field('Start', 'ULONG'),
+  \ cppapi#field('DataSize', 'ULONG'),
+  \ cppapi#field('Reserved1', 'ULONG'),
+  \ cppapi#field('Reserved2', 'ULONG'),
+  \ cppapi#field('Length40', 'ULONG'),
+  \ cppapi#field('Start', 'PHYSICAL_ADDRESS'),
+  \ cppapi#field('Length48', 'ULONG'),
+  \ cppapi#field('Start', 'PHYSICAL_ADDRESS'),
+  \ cppapi#field('Length64', 'ULONG'),
+  \ cppapi#field('Start', 'PHYSICAL_ADDRESS'),
+  \ ])
+
+call cppapi#struct('_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon138::__anon139', '', [
+  \ cppapi#field('Raw', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon138::__anon139::__anon140'),
+  \ cppapi#field('Translated', '_CM_PARTIAL_RESOURCE_DESCRIPTOR::__anon134::__anon138::__anon139::__anon141'),
+  \ cppapi#field('Affinity', 'KAFFINITY'),
+  \ cppapi#field('Group', 'USHORT'),
+  \ cppapi#field('MessageCount', 'USHORT'),
+  \ cppapi#field('Vector', 'ULONG'),
+  \ cppapi#field('Affinity', 'KAFFINITY'),
+  \ cppapi#field('Group', 'USHORT'),
+  \ cppapi#field('Level', 'USHORT'),
+  \ cppapi#field('Vector', 'ULONG'),
   \ ])
 
 call cppapi#struct('CM_PARTIAL_RESOURCE_LIST', '_CM_PARTIAL_RESOURCE_LIST', [])
@@ -973,6 +401,79 @@ call cppapi#struct('_CM_VIDEO_DEVICE_DATA', '', [
   \ cppapi#field('VideoClock', 'ULONG'),
   \ ])
 
+call cppapi#struct('CONTEXT_CHUNK', '_CONTEXT_CHUNK', [])
+call cppapi#struct('PCONTEXT_CHUNK', '_CONTEXT_CHUNK', [])
+call cppapi#struct('_CONTEXT_CHUNK', '', [
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('Offset', 'LONG'),
+  \ ])
+
+call cppapi#struct('CONTEXT_EX', '_CONTEXT_EX', [])
+call cppapi#struct('PCONTEXT_EX', '_CONTEXT_EX', [])
+call cppapi#struct('_CONTEXT_EX', '', [
+  \ cppapi#field('All', 'CONTEXT_CHUNK'),
+  \ cppapi#field('Legacy', 'CONTEXT_CHUNK'),
+  \ cppapi#field('XState', 'CONTEXT_CHUNK'),
+  \ ])
+
+call cppapi#struct('COUNTED_REASON_CONTEXT', '_COUNTED_REASON_CONTEXT', [])
+call cppapi#struct('PCOUNTED_REASON_CONTEXT', '_COUNTED_REASON_CONTEXT', [])
+call cppapi#struct('_COUNTED_REASON_CONTEXT', '', [
+  \ cppapi#field('DUMMYUNIONNAME', '_COUNTED_REASON_CONTEXT::__anon125'),
+  \ cppapi#field('Flags', 'ULONG'),
+  \ cppapi#field('Version', 'ULONG'),
+  \ cppapi#field('DUMMYNAME', '_COUNTED_REASON_CONTEXT::__anon125::__anon126'),
+  \ cppapi#field('SimpleString', 'UNICODE_STRING'),
+  \ cppapi#field('(StringCount)', 'PUNICODE_STRING'),
+  \ cppapi#field('ResourceFileName', 'UNICODE_STRING'),
+  \ cppapi#field('ResourceReasonId', 'USHORT'),
+  \ cppapi#field('StringCount', 'ULONG'),
+  \ ])
+
+call cppapi#struct('_COUNTED_REASON_CONTEXT::__anon125', '', [
+  \ cppapi#field('DUMMYNAME', '_COUNTED_REASON_CONTEXT::__anon125::__anon126'),
+  \ cppapi#field('SimpleString', 'UNICODE_STRING'),
+  \ cppapi#field('(StringCount)', 'PUNICODE_STRING'),
+  \ cppapi#field('ResourceFileName', 'UNICODE_STRING'),
+  \ cppapi#field('ResourceReasonId', 'USHORT'),
+  \ cppapi#field('StringCount', 'ULONG'),
+  \ ])
+
+call cppapi#struct('DEVICE_CAPABILITIES', '_DEVICE_CAPABILITIES', [])
+call cppapi#struct('PDEVICE_CAPABILITIES', '_DEVICE_CAPABILITIES', [])
+call cppapi#struct('_DEVICE_CAPABILITIES', '', [
+  \ cppapi#field('Address', 'ULONG'),
+  \ cppapi#field('D1Latency', 'ULONG'),
+  \ cppapi#field('D2Latency', 'ULONG'),
+  \ cppapi#field('D3Latency', 'ULONG'),
+  \ cppapi#field('DeviceD1:1', 'ULONG'),
+  \ cppapi#field('DeviceD2:1', 'ULONG'),
+  \ cppapi#field('DeviceState[POWER_SYSTEM_MAXIMUM]', 'DEVICE_POWER_STATE'),
+  \ cppapi#field('DeviceWake', 'DEVICE_POWER_STATE'),
+  \ cppapi#field('DockDevice:1', 'ULONG'),
+  \ cppapi#field('EjectSupported:1', 'ULONG'),
+  \ cppapi#field('HardwareDisabled:1', 'ULONG'),
+  \ cppapi#field('LockSupported:1', 'ULONG'),
+  \ cppapi#field('NoDisplayInUI:1', 'ULONG'),
+  \ cppapi#field('NonDynamic:1', 'ULONG'),
+  \ cppapi#field('RawDeviceOK:1', 'ULONG'),
+  \ cppapi#field('Removable:1', 'ULONG'),
+  \ cppapi#field('Reserved:13', 'ULONG'),
+  \ cppapi#field('Reserved1:1', 'ULONG'),
+  \ cppapi#field('SilentInstall:1', 'ULONG'),
+  \ cppapi#field('Size', 'USHORT'),
+  \ cppapi#field('SurpriseRemovalOK:1', 'ULONG'),
+  \ cppapi#field('SystemWake', 'SYSTEM_POWER_STATE'),
+  \ cppapi#field('UINumber', 'ULONG'),
+  \ cppapi#field('UniqueID:1', 'ULONG'),
+  \ cppapi#field('Version', 'USHORT'),
+  \ cppapi#field('WakeFromD0:1', 'ULONG'),
+  \ cppapi#field('WakeFromD1:1', 'ULONG'),
+  \ cppapi#field('WakeFromD2:1', 'ULONG'),
+  \ cppapi#field('WakeFromD3:1', 'ULONG'),
+  \ cppapi#field('WarmEjectSupported:1', 'ULONG'),
+  \ ])
+
 call cppapi#struct('DEVICE_FLAGS', '_DEVICE_FLAGS', [])
 call cppapi#struct('PDEVICE_FLAGS', '_DEVICE_FLAGS', [])
 call cppapi#struct('_DEVICE_FLAGS', '', [
@@ -985,6 +486,43 @@ call cppapi#struct('_DEVICE_FLAGS', '', [
   \ cppapi#field('Removable', 'ULONG'),
   \ ])
 
+call cppapi#struct('DEVICE_OBJECT', '_DEVICE_OBJECT', [])
+call cppapi#struct('PDEVICE_OBJECT', '_DEVICE_OBJECT', [])
+call cppapi#struct('_DEVICE_OBJECT', '', [
+  \ cppapi#field('ActiveThreadCount', 'ULONG'),
+  \ cppapi#field('AlignmentRequirement', 'ULONG'),
+  \ cppapi#field('*AttachedDevice', '_DEVICE_OBJECT'),
+  \ cppapi#field('Characteristics', 'ULONG'),
+  \ cppapi#field('*CurrentIrp', '_IRP'),
+  \ cppapi#field('DeviceExtension', 'PVOID'),
+  \ cppapi#field('DeviceLock', 'KEVENT'),
+  \ cppapi#field('*DeviceObjectExtension', '_DEVOBJ_EXTENSION'),
+  \ cppapi#field('DeviceQueue', 'KDEVICE_QUEUE'),
+  \ cppapi#field('DeviceType', 'DEVICE_TYPE'),
+  \ cppapi#field('Dpc', 'KDPC'),
+  \ cppapi#field('*DriverObject', '_DRIVER_OBJECT'),
+  \ cppapi#field('Flags', 'ULONG'),
+  \ cppapi#field('*NextDevice', '_DEVICE_OBJECT'),
+  \ cppapi#field('Queue', '_DEVICE_OBJECT::__anon187'),
+  \ cppapi#field('ReferenceCount', 'LONG'),
+  \ cppapi#field('Reserved', 'PVOID'),
+  \ cppapi#field('SectorSize', 'USHORT'),
+  \ cppapi#field('SecurityDescriptor', 'PSECURITY_DESCRIPTOR'),
+  \ cppapi#field('Size', 'USHORT'),
+  \ cppapi#field('Spare1', 'USHORT'),
+  \ cppapi#field('StackSize', 'CCHAR'),
+  \ cppapi#field('Timer', 'PIO_TIMER'),
+  \ cppapi#field('Type', 'CSHORT'),
+  \ cppapi#field('Vpb', 'PVPB'),
+  \ cppapi#field('ListEntry', 'LIST_ENTRY'),
+  \ cppapi#field('Wcb', 'WAIT_CONTEXT_BLOCK'),
+  \ ])
+
+call cppapi#struct('_DEVICE_OBJECT::__anon187', '', [
+  \ cppapi#field('ListEntry', 'LIST_ENTRY'),
+  \ cppapi#field('Wcb', 'WAIT_CONTEXT_BLOCK'),
+  \ ])
+
 call cppapi#struct('DEVICE_RELATIONS', '_DEVICE_RELATIONS', [])
 call cppapi#struct('PDEVICE_RELATIONS', '_DEVICE_RELATIONS', [])
 call cppapi#struct('_DEVICE_RELATIONS', '', [
@@ -992,45 +530,137 @@ call cppapi#struct('_DEVICE_RELATIONS', '', [
   \ cppapi#field('Objects[1]', 'PDEVICE_OBJECT'),
   \ ])
 
+call cppapi#struct('DEVOBJ_EXTENSION', '_DEVOBJ_EXTENSION', [])
+call cppapi#struct('PDEVOBJ_EXTENSION', '_DEVOBJ_EXTENSION', [])
+call cppapi#struct('_DEVOBJ_EXTENSION', '', [
+  \ cppapi#field('DeviceObject', 'PDEVICE_OBJECT'),
+  \ cppapi#field('Size', 'USHORT'),
+  \ cppapi#field('Type', 'CSHORT'),
+  \ ])
+
 call cppapi#struct('DISPATCHER_HEADER', '_DISPATCHER_HEADER', [])
 call cppapi#struct('PDISPATCHER_HEADER', '_DISPATCHER_HEADER', [])
 call cppapi#struct('_DISPATCHER_HEADER', '', [
-  \ cppapi#field('DUMMYUNIONNAME', '}'),
+  \ cppapi#field('DUMMYUNIONNAME', '_DISPATCHER_HEADER::__anon164'),
   \ cppapi#field('SignalState', 'LONG'),
   \ cppapi#field('WaitListHead', 'LIST_ENTRY'),
-  \ cppapi#field('DUMMYSTRUCTNAME', '}'),
+  \ cppapi#field('DUMMYNAME', '_DISPATCHER_HEADER::__anon164::__anon165'),
   \ cppapi#field('LONG', 'volatile'),
-  \ cppapi#field('DUMMYUNIONNAME', '}'),
-  \ cppapi#field('DUMMYUNIONNAME2', '}'),
-  \ cppapi#field('DUMMYUNIONNAME3', '}'),
+  \ cppapi#field('DUMMYUNIONNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon166'),
+  \ cppapi#field('DUMMYUNIONNAME2', '_DISPATCHER_HEADER::__anon164::__anon165::__anon169'),
+  \ cppapi#field('DUMMYUNIONNAME3', '_DISPATCHER_HEADER::__anon164::__anon165::__anon172'),
   \ cppapi#field('Type', 'UCHAR'),
   \ cppapi#field('Abandoned', 'UCHAR'),
-  \ cppapi#field('DUMMYUNIONNAME', '}'),
+  \ cppapi#field('DUMMYUNIONNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon166::__anon167'),
   \ cppapi#field('Signalling', 'BOOLEAN'),
-  \ cppapi#field('DUMMYSTRUCTNAME', '}'),
+  \ cppapi#field('DUMMYNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon166::__anon167::__anon168'),
   \ cppapi#field('TimerControlFlags', 'UCHAR'),
   \ cppapi#field('Absolute', 'UCHAR'),
   \ cppapi#field('Coalescable', 'UCHAR'),
   \ cppapi#field('EncodedTolerableDelay', 'UCHAR'),
   \ cppapi#field('KeepShifting', 'UCHAR'),
-  \ cppapi#field('DUMMYUNIONNAME', '}'),
+  \ cppapi#field('DUMMYUNIONNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon169::__anon170'),
   \ cppapi#field('Hand', 'UCHAR'),
   \ cppapi#field('Size', 'UCHAR'),
-  \ cppapi#field('DUMMYSTRUCTNAME', '}'),
+  \ cppapi#field('DUMMYNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon169::__anon170::__anon171'),
   \ cppapi#field('ThreadControlFlags', 'UCHAR'),
   \ cppapi#field('CounterProfiling', 'UCHAR'),
   \ cppapi#field('CpuThrottled', 'UCHAR'),
   \ cppapi#field('CycleProfiling', 'UCHAR'),
   \ cppapi#field('Reserved', 'UCHAR'),
-  \ cppapi#field('DUMMYUNIONNAME', '}'),
-  \ cppapi#field('DUMMYUNIONNAME', '}'),
+  \ cppapi#field('DUMMYUNIONNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon172::__anon173'),
+  \ cppapi#field('DUMMYUNIONNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon172::__anon175'),
   \ cppapi#field('DpcActive', 'BOOLEAN'),
-  \ cppapi#field('DUMMYSTRUCTNAME', '}'),
+  \ cppapi#field('DUMMYNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon172::__anon173::__anon174'),
   \ cppapi#field('TimerMiscFlags', 'UCHAR'),
   \ cppapi#field('UCHAR', 'volatile'),
   \ cppapi#field('Index', 'UCHAR'),
   \ cppapi#field('Inserted', 'UCHAR'),
-  \ cppapi#field('DUMMYSTRUCTNAME', '}'),
+  \ cppapi#field('DUMMYNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon172::__anon175::__anon176'),
+  \ cppapi#field('DebugActive', 'BOOLEAN'),
+  \ cppapi#field('ActiveDR7', 'BOOLEAN'),
+  \ cppapi#field('Instrumented', 'BOOLEAN'),
+  \ cppapi#field('Reserved2', 'BOOLEAN'),
+  \ cppapi#field('UmsPrimary', 'BOOLEAN'),
+  \ cppapi#field('UmsScheduled', 'BOOLEAN'),
+  \ ])
+
+call cppapi#struct('_DISPATCHER_HEADER::__anon164', '', [
+  \ cppapi#field('DUMMYNAME', '_DISPATCHER_HEADER::__anon164::__anon165'),
+  \ cppapi#field('LONG', 'volatile'),
+  \ cppapi#field('DUMMYUNIONNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon166'),
+  \ cppapi#field('DUMMYUNIONNAME2', '_DISPATCHER_HEADER::__anon164::__anon165::__anon169'),
+  \ cppapi#field('DUMMYUNIONNAME3', '_DISPATCHER_HEADER::__anon164::__anon165::__anon172'),
+  \ cppapi#field('Type', 'UCHAR'),
+  \ cppapi#field('Abandoned', 'UCHAR'),
+  \ cppapi#field('DUMMYUNIONNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon166::__anon167'),
+  \ cppapi#field('Signalling', 'BOOLEAN'),
+  \ cppapi#field('DUMMYNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon166::__anon167::__anon168'),
+  \ cppapi#field('TimerControlFlags', 'UCHAR'),
+  \ cppapi#field('Absolute', 'UCHAR'),
+  \ cppapi#field('Coalescable', 'UCHAR'),
+  \ cppapi#field('EncodedTolerableDelay', 'UCHAR'),
+  \ cppapi#field('KeepShifting', 'UCHAR'),
+  \ cppapi#field('DUMMYUNIONNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon169::__anon170'),
+  \ cppapi#field('Hand', 'UCHAR'),
+  \ cppapi#field('Size', 'UCHAR'),
+  \ cppapi#field('DUMMYNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon169::__anon170::__anon171'),
+  \ cppapi#field('ThreadControlFlags', 'UCHAR'),
+  \ cppapi#field('CounterProfiling', 'UCHAR'),
+  \ cppapi#field('CpuThrottled', 'UCHAR'),
+  \ cppapi#field('CycleProfiling', 'UCHAR'),
+  \ cppapi#field('Reserved', 'UCHAR'),
+  \ cppapi#field('DUMMYUNIONNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon172::__anon173'),
+  \ cppapi#field('DUMMYUNIONNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon172::__anon175'),
+  \ cppapi#field('DpcActive', 'BOOLEAN'),
+  \ cppapi#field('DUMMYNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon172::__anon173::__anon174'),
+  \ cppapi#field('TimerMiscFlags', 'UCHAR'),
+  \ cppapi#field('UCHAR', 'volatile'),
+  \ cppapi#field('Index', 'UCHAR'),
+  \ cppapi#field('Inserted', 'UCHAR'),
+  \ cppapi#field('DUMMYNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon172::__anon175::__anon176'),
+  \ cppapi#field('DebugActive', 'BOOLEAN'),
+  \ cppapi#field('ActiveDR7', 'BOOLEAN'),
+  \ cppapi#field('Instrumented', 'BOOLEAN'),
+  \ cppapi#field('Reserved2', 'BOOLEAN'),
+  \ cppapi#field('UmsPrimary', 'BOOLEAN'),
+  \ cppapi#field('UmsScheduled', 'BOOLEAN'),
+  \ ])
+
+call cppapi#struct('_DISPATCHER_HEADER::__anon164::__anon165::__anon166', '', [
+  \ cppapi#field('Abandoned', 'UCHAR'),
+  \ cppapi#field('DUMMYUNIONNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon166::__anon167'),
+  \ cppapi#field('Signalling', 'BOOLEAN'),
+  \ cppapi#field('DUMMYNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon166::__anon167::__anon168'),
+  \ cppapi#field('TimerControlFlags', 'UCHAR'),
+  \ cppapi#field('Absolute', 'UCHAR'),
+  \ cppapi#field('Coalescable', 'UCHAR'),
+  \ cppapi#field('EncodedTolerableDelay', 'UCHAR'),
+  \ cppapi#field('KeepShifting', 'UCHAR'),
+  \ ])
+
+call cppapi#struct('_DISPATCHER_HEADER::__anon164::__anon165::__anon169', '', [
+  \ cppapi#field('DUMMYUNIONNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon169::__anon170'),
+  \ cppapi#field('Hand', 'UCHAR'),
+  \ cppapi#field('Size', 'UCHAR'),
+  \ cppapi#field('DUMMYNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon169::__anon170::__anon171'),
+  \ cppapi#field('ThreadControlFlags', 'UCHAR'),
+  \ cppapi#field('CounterProfiling', 'UCHAR'),
+  \ cppapi#field('CpuThrottled', 'UCHAR'),
+  \ cppapi#field('CycleProfiling', 'UCHAR'),
+  \ cppapi#field('Reserved', 'UCHAR'),
+  \ ])
+
+call cppapi#struct('_DISPATCHER_HEADER::__anon164::__anon165::__anon172', '', [
+  \ cppapi#field('DUMMYUNIONNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon172::__anon173'),
+  \ cppapi#field('DUMMYUNIONNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon172::__anon175'),
+  \ cppapi#field('DpcActive', 'BOOLEAN'),
+  \ cppapi#field('DUMMYNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon172::__anon173::__anon174'),
+  \ cppapi#field('TimerMiscFlags', 'UCHAR'),
+  \ cppapi#field('UCHAR', 'volatile'),
+  \ cppapi#field('Index', 'UCHAR'),
+  \ cppapi#field('Inserted', 'UCHAR'),
+  \ cppapi#field('DUMMYNAME', '_DISPATCHER_HEADER::__anon164::__anon165::__anon172::__anon175::__anon176'),
   \ cppapi#field('DebugActive', 'BOOLEAN'),
   \ cppapi#field('ActiveDR7', 'BOOLEAN'),
   \ cppapi#field('Instrumented', 'BOOLEAN'),
@@ -1062,8 +692,28 @@ call cppapi#struct('PDRIVER_EXTENSION', '_DRIVER_EXTENSION', [])
 call cppapi#struct('_DRIVER_EXTENSION', '', [
   \ cppapi#field('AddDevice', 'PDRIVER_ADD_DEVICE'),
   \ cppapi#field('Count', 'ULONG'),
-  \ cppapi#field('_DRIVER_OBJECT', 'struct'),
+  \ cppapi#field('*DriverObject', '_DRIVER_OBJECT'),
   \ cppapi#field('ServiceKeyName', 'UNICODE_STRING'),
+  \ ])
+
+call cppapi#struct('DRIVER_OBJECT', '_DRIVER_OBJECT', [])
+call cppapi#struct('PDRIVER_OBJECT', '_DRIVER_OBJECT', [])
+call cppapi#struct('_DRIVER_OBJECT', '', [
+  \ cppapi#field('DeviceObject', 'PDEVICE_OBJECT'),
+  \ cppapi#field('DriverExtension', 'PDRIVER_EXTENSION'),
+  \ cppapi#field('DriverInit', 'PDRIVER_INITIALIZE'),
+  \ cppapi#field('DriverName', 'UNICODE_STRING'),
+  \ cppapi#field('DriverSection', 'PVOID'),
+  \ cppapi#field('DriverSize', 'ULONG'),
+  \ cppapi#field('DriverStart', 'PVOID'),
+  \ cppapi#field('DriverStartIo', 'PDRIVER_STARTIO'),
+  \ cppapi#field('DriverUnload', 'PDRIVER_UNLOAD'),
+  \ cppapi#field('FastIoDispatch', 'PFAST_IO_DISPATCH'),
+  \ cppapi#field('Flags', 'ULONG'),
+  \ cppapi#field('HardwareDatabase', 'PUNICODE_STRING'),
+  \ cppapi#field('MajorFunction[IRP_MJ_MAXIMUM_FUNCTION', 'PDRIVER_DISPATCH'),
+  \ cppapi#field('Size', 'CSHORT'),
+  \ cppapi#field('Type', 'CSHORT'),
   \ ])
 
 call cppapi#struct('EISA_DMA_CONFIGURATION', '_EISA_DMA_CONFIGURATION', [])
@@ -1150,14 +800,14 @@ call cppapi#struct('_ERESOURCE', '', [
   \ cppapi#field('ActiveCount', 'SHORT'),
   \ cppapi#field('ActiveEntries', 'ULONG'),
   \ cppapi#field('ContentionCount', 'ULONG'),
-  \ cppapi#field('PKEVENT', '__volatile'),
+  \ cppapi#field('ExclusiveWaiters', 'PKEVENT'),
   \ cppapi#field('Flag', 'USHORT'),
   \ cppapi#field('NumberOfExclusiveWaiters', 'ULONG'),
   \ cppapi#field('NumberOfSharedWaiters', 'ULONG'),
   \ cppapi#field('OwnerEntry', 'OWNER_ENTRY'),
   \ cppapi#field('OwnerTable', 'POWNER_ENTRY'),
   \ cppapi#field('Reserved2', 'PVOID'),
-  \ cppapi#field('PKSEMAPHORE', '__volatile'),
+  \ cppapi#field('SharedWaiters', 'PKSEMAPHORE'),
   \ cppapi#field('SpinLock', 'KSPIN_LOCK'),
   \ cppapi#field('SystemResourcesList', 'LIST_ENTRY'),
   \ cppapi#field('Address', 'PVOID'),
@@ -1167,8 +817,8 @@ call cppapi#struct('_ERESOURCE', '', [
 call cppapi#struct('EX_RUNDOWN_REF', '_EX_RUNDOWN_REF', [])
 call cppapi#struct('PEX_RUNDOWN_REF', '_EX_RUNDOWN_REF', [])
 call cppapi#struct('_EX_RUNDOWN_REF', '', [
-  \ cppapi#field('ULONG_PTR', '__volatile'),
-  \ cppapi#field('PVOID', '__volatile'),
+  \ cppapi#field('Count', 'ULONG_PTR'),
+  \ cppapi#field('Ptr', 'PVOID'),
   \ ])
 
 call cppapi#struct('FAST_IO_DISPATCH', '_FAST_IO_DISPATCH', [])
@@ -1238,6 +888,12 @@ call cppapi#struct('_FILE_IOSTATUSBLOCK_RANGE_INFORMATION', '', [
   \ cppapi#field('Length', 'ULONG'),
   \ ])
 
+call cppapi#struct('FILE_IO_COMPLETION_NOTIFICATION_INFORMATION', '_FILE_IO_COMPLETION_NOTIFICATION_INFORMATION', [])
+call cppapi#struct('PFILE_IO_COMPLETION_NOTIFICATION_INFORMATION', '_FILE_IO_COMPLETION_NOTIFICATION_INFORMATION', [])
+call cppapi#struct('_FILE_IO_COMPLETION_NOTIFICATION_INFORMATION', '', [
+  \ cppapi#field('Flags', 'ULONG'),
+  \ ])
+
 call cppapi#struct('FILE_IO_PRIORITY_HINT_INFORMATION', '_FILE_IO_PRIORITY_HINT_INFORMATION', [])
 call cppapi#struct('PFILE_IO_PRIORITY_HINT_INFORMATION', '_FILE_IO_PRIORITY_HINT_INFORMATION', [])
 call cppapi#struct('_FILE_IO_PRIORITY_HINT_INFORMATION', '', [
@@ -1268,10 +924,52 @@ call cppapi#struct('_FILE_NUMA_NODE_INFORMATION', '', [
   \ cppapi#field('NodeNumber', 'USHORT'),
   \ ])
 
+call cppapi#struct('FILE_OBJECT', '_FILE_OBJECT', [])
+call cppapi#struct('PFILE_OBJECT', '_FILE_OBJECT', [])
+call cppapi#struct('_FILE_OBJECT', '', [
+  \ cppapi#field('Busy', 'ULONG'),
+  \ cppapi#field('CompletionContext', 'PIO_COMPLETION_CONTEXT'),
+  \ cppapi#field('CurrentByteOffset', 'LARGE_INTEGER'),
+  \ cppapi#field('DeleteAccess', 'BOOLEAN'),
+  \ cppapi#field('DeletePending', 'BOOLEAN'),
+  \ cppapi#field('DeviceObject', 'PDEVICE_OBJECT'),
+  \ cppapi#field('Event', 'KEVENT'),
+  \ cppapi#field('FileName', 'UNICODE_STRING'),
+  \ cppapi#field('FileObjectExtension', 'PVOID'),
+  \ cppapi#field('FinalStatus', 'NTSTATUS'),
+  \ cppapi#field('Flags', 'ULONG'),
+  \ cppapi#field('FsContext', 'PVOID'),
+  \ cppapi#field('FsContext2', 'PVOID'),
+  \ cppapi#field('IrpList', 'LIST_ENTRY'),
+  \ cppapi#field('IrpListLock', 'KSPIN_LOCK'),
+  \ cppapi#field('LastLock', 'PVOID'),
+  \ cppapi#field('Lock', 'KEVENT'),
+  \ cppapi#field('LockOperation', 'BOOLEAN'),
+  \ cppapi#field('PrivateCacheMap', 'PVOID'),
+  \ cppapi#field('ReadAccess', 'BOOLEAN'),
+  \ cppapi#field('*RelatedFileObject', '_FILE_OBJECT'),
+  \ cppapi#field('SectionObjectPointer', 'PSECTION_OBJECT_POINTERS'),
+  \ cppapi#field('SharedDelete', 'BOOLEAN'),
+  \ cppapi#field('SharedRead', 'BOOLEAN'),
+  \ cppapi#field('SharedWrite', 'BOOLEAN'),
+  \ cppapi#field('Size', 'CSHORT'),
+  \ cppapi#field('Type', 'CSHORT'),
+  \ cppapi#field('Vpb', 'PVPB'),
+  \ cppapi#field('Waiters', 'ULONG'),
+  \ cppapi#field('WriteAccess', 'BOOLEAN'),
+  \ ])
+
 call cppapi#struct('FILE_POSITION_INFORMATION', '_FILE_POSITION_INFORMATION', [])
 call cppapi#struct('PFILE_POSITION_INFORMATION', '_FILE_POSITION_INFORMATION', [])
 call cppapi#struct('_FILE_POSITION_INFORMATION', '', [
   \ cppapi#field('CurrentByteOffset', 'LARGE_INTEGER'),
+  \ ])
+
+call cppapi#struct('FILE_PROCESS_IDS_USING_FILE_INFORMATION', '_FILE_PROCESS_IDS_USING_FILE_INFORMATION', [])
+call cppapi#struct('PFILE_PROCESS_IDS_USING_FILE_INFORMATION', '_FILE_PROCESS_IDS_USING_FILE_INFORMATION', [])
+call cppapi#struct('_FILE_PROCESS_IDS_USING_FILE_INFORMATION', '', [
+  \ cppapi#field('NumberOfProcessIdsInList', 'ULONG'),
+  \ cppapi#field('ProcessIdList[1]', 'ULONG_PTR'),
   \ ])
 
 call cppapi#struct('FILE_SFIO_RESERVE_INFORMATION', '_FILE_SFIO_RESERVE_INFORMATION', [])
@@ -1301,6 +999,11 @@ call cppapi#struct('_FILE_STANDARD_INFORMATION', '', [
   \ cppapi#field('Directory', 'BOOLEAN'),
   \ cppapi#field('EndOfFile', 'LARGE_INTEGER'),
   \ cppapi#field('NumberOfLinks', 'ULONG'),
+  \ ])
+
+call cppapi#struct('GENERAL_LOOKASIDE', '_GENERAL_LOOKASIDE', [])
+call cppapi#struct('PGENERAL_LOOKASIDE', '_GENERAL_LOOKASIDE', [])
+call cppapi#struct('_GENERAL_LOOKASIDE', '', [
   \ ])
 
 call cppapi#struct('GENERAL_LOOKASIDE_POOL', '_GENERAL_LOOKASIDE_POOL', [])
@@ -1333,6 +1036,13 @@ call cppapi#struct('_INTERFACE', '', [
   \ cppapi#field('InterfaceReference', 'PINTERFACE_REFERENCE'),
   \ cppapi#field('Size', 'USHORT'),
   \ cppapi#field('Version', 'USHORT'),
+  \ ])
+
+call cppapi#struct('IO_COMPLETION_CONTEXT', '_IO_COMPLETION_CONTEXT', [])
+call cppapi#struct('PIO_COMPLETION_CONTEXT', '_IO_COMPLETION_CONTEXT', [])
+call cppapi#struct('_IO_COMPLETION_CONTEXT', '', [
+  \ cppapi#field('Key', 'PVOID'),
+  \ cppapi#field('Port', 'PVOID'),
   \ ])
 
 call cppapi#struct('IO_ERROR_LOG_MESSAGE', '_IO_ERROR_LOG_MESSAGE', [])
@@ -1373,17 +1083,17 @@ call cppapi#struct('_IO_RESOURCE_DESCRIPTOR', '', [
   \ cppapi#field('Spare1', 'UCHAR'),
   \ cppapi#field('Spare2', 'USHORT'),
   \ cppapi#field('Type', 'UCHAR'),
-  \ cppapi#field('BusNumber', '}'),
-  \ cppapi#field('ConfigData', '}'),
-  \ cppapi#field('DevicePrivate', '}'),
-  \ cppapi#field('Dma', '}'),
-  \ cppapi#field('Generic', '}'),
-  \ cppapi#field('Interrupt', '}'),
-  \ cppapi#field('Memory', '}'),
-  \ cppapi#field('Memory40', '}'),
-  \ cppapi#field('Memory48', '}'),
-  \ cppapi#field('Memory64', '}'),
-  \ cppapi#field('Port', '}'),
+  \ cppapi#field('BusNumber', '_IO_RESOURCE_DESCRIPTOR::__anon150::__anon157'),
+  \ cppapi#field('ConfigData', '_IO_RESOURCE_DESCRIPTOR::__anon150::__anon158'),
+  \ cppapi#field('DevicePrivate', '_IO_RESOURCE_DESCRIPTOR::__anon150::__anon156'),
+  \ cppapi#field('Dma', '_IO_RESOURCE_DESCRIPTOR::__anon150::__anon154'),
+  \ cppapi#field('Generic', '_IO_RESOURCE_DESCRIPTOR::__anon150::__anon155'),
+  \ cppapi#field('Interrupt', '_IO_RESOURCE_DESCRIPTOR::__anon150::__anon153'),
+  \ cppapi#field('Memory', '_IO_RESOURCE_DESCRIPTOR::__anon150::__anon152'),
+  \ cppapi#field('Memory40', '_IO_RESOURCE_DESCRIPTOR::__anon150::__anon159'),
+  \ cppapi#field('Memory48', '_IO_RESOURCE_DESCRIPTOR::__anon150::__anon160'),
+  \ cppapi#field('Memory64', '_IO_RESOURCE_DESCRIPTOR::__anon150::__anon161'),
+  \ cppapi#field('Port', '_IO_RESOURCE_DESCRIPTOR::__anon150::__anon151'),
   \ cppapi#field('Alignment', 'ULONG'),
   \ cppapi#field('Length', 'ULONG'),
   \ cppapi#field('MaximumAddress', 'PHYSICAL_ADDRESS'),
@@ -1424,7 +1134,61 @@ call cppapi#struct('_IO_RESOURCE_DESCRIPTOR', '', [
   \ cppapi#field('Length64', 'ULONG'),
   \ cppapi#field('MaximumAddress', 'PHYSICAL_ADDRESS'),
   \ cppapi#field('MinimumAddress', 'PHYSICAL_ADDRESS'),
-  \ cppapi#field('u', '}'),
+  \ cppapi#field('u', '_IO_RESOURCE_DESCRIPTOR::__anon150'),
+  \ ])
+
+call cppapi#struct('_IO_RESOURCE_DESCRIPTOR::__anon150', '', [
+  \ cppapi#field('BusNumber', '_IO_RESOURCE_DESCRIPTOR::__anon150::__anon157'),
+  \ cppapi#field('ConfigData', '_IO_RESOURCE_DESCRIPTOR::__anon150::__anon158'),
+  \ cppapi#field('DevicePrivate', '_IO_RESOURCE_DESCRIPTOR::__anon150::__anon156'),
+  \ cppapi#field('Dma', '_IO_RESOURCE_DESCRIPTOR::__anon150::__anon154'),
+  \ cppapi#field('Generic', '_IO_RESOURCE_DESCRIPTOR::__anon150::__anon155'),
+  \ cppapi#field('Interrupt', '_IO_RESOURCE_DESCRIPTOR::__anon150::__anon153'),
+  \ cppapi#field('Memory', '_IO_RESOURCE_DESCRIPTOR::__anon150::__anon152'),
+  \ cppapi#field('Memory40', '_IO_RESOURCE_DESCRIPTOR::__anon150::__anon159'),
+  \ cppapi#field('Memory48', '_IO_RESOURCE_DESCRIPTOR::__anon150::__anon160'),
+  \ cppapi#field('Memory64', '_IO_RESOURCE_DESCRIPTOR::__anon150::__anon161'),
+  \ cppapi#field('Port', '_IO_RESOURCE_DESCRIPTOR::__anon150::__anon151'),
+  \ cppapi#field('Alignment', 'ULONG'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('MaximumAddress', 'PHYSICAL_ADDRESS'),
+  \ cppapi#field('MinimumAddress', 'PHYSICAL_ADDRESS'),
+  \ cppapi#field('Alignment', 'ULONG'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('MaximumAddress', 'PHYSICAL_ADDRESS'),
+  \ cppapi#field('MinimumAddress', 'PHYSICAL_ADDRESS'),
+  \ cppapi#field('AffinityPolicy', 'IRQ_DEVICE_POLICY'),
+  \ cppapi#field('Group', 'USHORT'),
+  \ cppapi#field('MaximumVector', 'ULONG'),
+  \ cppapi#field('MinimumVector', 'ULONG'),
+  \ cppapi#field('PriorityPolicy', 'IRQ_PRIORITY'),
+  \ cppapi#field('TargetedProcessors', 'KAFFINITY'),
+  \ cppapi#field('MaximumChannel', 'ULONG'),
+  \ cppapi#field('MinimumChannel', 'ULONG'),
+  \ cppapi#field('Alignment', 'ULONG'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('MaximumAddress', 'PHYSICAL_ADDRESS'),
+  \ cppapi#field('MinimumAddress', 'PHYSICAL_ADDRESS'),
+  \ cppapi#field('Data[3]', 'ULONG'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('MaxBusNumber', 'ULONG'),
+  \ cppapi#field('MinBusNumber', 'ULONG'),
+  \ cppapi#field('Reserved', 'ULONG'),
+  \ cppapi#field('Priority', 'ULONG'),
+  \ cppapi#field('Reserved1', 'ULONG'),
+  \ cppapi#field('Reserved2', 'ULONG'),
+  \ cppapi#field('Alignment40', 'ULONG'),
+  \ cppapi#field('Length40', 'ULONG'),
+  \ cppapi#field('MaximumAddress', 'PHYSICAL_ADDRESS'),
+  \ cppapi#field('MinimumAddress', 'PHYSICAL_ADDRESS'),
+  \ cppapi#field('Alignment48', 'ULONG'),
+  \ cppapi#field('Length48', 'ULONG'),
+  \ cppapi#field('MaximumAddress', 'PHYSICAL_ADDRESS'),
+  \ cppapi#field('MinimumAddress', 'PHYSICAL_ADDRESS'),
+  \ cppapi#field('Alignment64', 'ULONG'),
+  \ cppapi#field('Length64', 'ULONG'),
+  \ cppapi#field('MaximumAddress', 'PHYSICAL_ADDRESS'),
+  \ cppapi#field('MinimumAddress', 'PHYSICAL_ADDRESS'),
   \ ])
 
 call cppapi#struct('IO_RESOURCE_LIST', '_IO_RESOURCE_LIST', [])
@@ -1448,11 +1212,314 @@ call cppapi#struct('_IO_RESOURCE_REQUIREMENTS_LIST', '', [
   \ cppapi#field('SlotNumber', 'ULONG'),
   \ ])
 
+call cppapi#struct('IO_SECURITY_CONTEXT', '_IO_SECURITY_CONTEXT', [])
+call cppapi#struct('PIO_SECURITY_CONTEXT', '_IO_SECURITY_CONTEXT', [])
+call cppapi#struct('_IO_SECURITY_CONTEXT', '', [
+  \ cppapi#field('AccessState', 'PACCESS_STATE'),
+  \ cppapi#field('DesiredAccess', 'ACCESS_MASK'),
+  \ cppapi#field('FullCreateOptions', 'ULONG'),
+  \ cppapi#field('SecurityQos', 'PSECURITY_QUALITY_OF_SERVICE'),
+  \ ])
+
 call cppapi#struct('IO_SESSION_CONNECT_INFO', '_IO_SESSION_CONNECT_INFO', [])
 call cppapi#struct('PIO_SESSION_CONNECT_INFO', '_IO_SESSION_CONNECT_INFO', [])
 call cppapi#struct('_IO_SESSION_CONNECT_INFO', '', [
   \ cppapi#field('LocalSession', 'BOOLEAN'),
   \ cppapi#field('SessionId', 'ULONG'),
+  \ ])
+
+call cppapi#struct('IO_STACK_LOCATION', '_IO_STACK_LOCATION', [])
+call cppapi#struct('PIO_STACK_LOCATION', '_IO_STACK_LOCATION', [])
+call cppapi#struct('_IO_STACK_LOCATION', '', [
+  \ cppapi#field('CompletionRoutine', 'PIO_COMPLETION_ROUTINE'),
+  \ cppapi#field('Context', 'PVOID'),
+  \ cppapi#field('Control', 'UCHAR'),
+  \ cppapi#field('DeviceObject', 'PDEVICE_OBJECT'),
+  \ cppapi#field('FileObject', 'PFILE_OBJECT'),
+  \ cppapi#field('Flags', 'UCHAR'),
+  \ cppapi#field('MajorFunction', 'UCHAR'),
+  \ cppapi#field('MinorFunction', 'UCHAR'),
+  \ cppapi#field('Parameters', '_IO_STACK_LOCATION::__anon200'),
+  \ cppapi#field('Create', '_IO_STACK_LOCATION::__anon200::__anon201'),
+  \ cppapi#field('DeviceCapabilities', '_IO_STACK_LOCATION::__anon200::__anon226'),
+  \ cppapi#field('DeviceIoControl', '_IO_STACK_LOCATION::__anon200::__anon216'),
+  \ cppapi#field('FileSystemControl', '_IO_STACK_LOCATION::__anon200::__anon214'),
+  \ cppapi#field('FilterResourceRequirements', '_IO_STACK_LOCATION::__anon200::__anon227'),
+  \ cppapi#field('LockControl', '_IO_STACK_LOCATION::__anon200::__anon215'),
+  \ cppapi#field('MountVolume', '_IO_STACK_LOCATION::__anon200::__anon219'),
+  \ cppapi#field('NotifyDirectory', '_IO_STACK_LOCATION::__anon200::__anon205'),
+  \ cppapi#field('Others', '_IO_STACK_LOCATION::__anon200::__anon240'),
+  \ cppapi#field('Power', '_IO_STACK_LOCATION::__anon200::__anon235'),
+  \ cppapi#field('Power', '_IO_STACK_LOCATION::__anon200::__anon237'),
+  \ cppapi#field('PowerSequence', '_IO_STACK_LOCATION::__anon200::__anon234'),
+  \ cppapi#field('QueryDeviceRelations', '_IO_STACK_LOCATION::__anon200::__anon224'),
+  \ cppapi#field('QueryDeviceText', '_IO_STACK_LOCATION::__anon200::__anon231'),
+  \ cppapi#field('QueryDirectory', '_IO_STACK_LOCATION::__anon200::__anon204'),
+  \ cppapi#field('QueryEa', '_IO_STACK_LOCATION::__anon200::__anon210'),
+  \ cppapi#field('QueryFile', '_IO_STACK_LOCATION::__anon200::__anon206'),
+  \ cppapi#field('QueryId', '_IO_STACK_LOCATION::__anon200::__anon230'),
+  \ cppapi#field('QueryInterface', '_IO_STACK_LOCATION::__anon200::__anon225'),
+  \ cppapi#field('QueryQuota', '_IO_STACK_LOCATION::__anon200::__anon222'),
+  \ cppapi#field('QuerySecurity', '_IO_STACK_LOCATION::__anon200::__anon217'),
+  \ cppapi#field('QueryVolume', '_IO_STACK_LOCATION::__anon200::__anon212'),
+  \ cppapi#field('Read', '_IO_STACK_LOCATION::__anon200::__anon202'),
+  \ cppapi#field('ReadWriteConfig', '_IO_STACK_LOCATION::__anon200::__anon228'),
+  \ cppapi#field('Scsi', '_IO_STACK_LOCATION::__anon200::__anon221'),
+  \ cppapi#field('SetEa', '_IO_STACK_LOCATION::__anon200::__anon211'),
+  \ cppapi#field('SetFile', '_IO_STACK_LOCATION::__anon200::__anon207'),
+  \ cppapi#field('SetLock', '_IO_STACK_LOCATION::__anon200::__anon229'),
+  \ cppapi#field('SetQuota', '_IO_STACK_LOCATION::__anon200::__anon223'),
+  \ cppapi#field('SetSecurity', '_IO_STACK_LOCATION::__anon200::__anon218'),
+  \ cppapi#field('SetVolume', '_IO_STACK_LOCATION::__anon200::__anon213'),
+  \ cppapi#field('StartDevice', '_IO_STACK_LOCATION::__anon200::__anon238'),
+  \ cppapi#field('UsageNotification', '_IO_STACK_LOCATION::__anon200::__anon232'),
+  \ cppapi#field('VerifyVolume', '_IO_STACK_LOCATION::__anon200::__anon220'),
+  \ cppapi#field('WMI', '_IO_STACK_LOCATION::__anon200::__anon239'),
+  \ cppapi#field('WaitWake', '_IO_STACK_LOCATION::__anon200::__anon233'),
+  \ cppapi#field('Write', '_IO_STACK_LOCATION::__anon200::__anon203'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'USHORT'),
+  \ cppapi#field('Options', 'ULONG'),
+  \ cppapi#field('SecurityContext', 'PIO_SECURITY_CONTEXT'),
+  \ cppapi#field('ShareAccess', 'USHORT'),
+  \ cppapi#field('ByteOffset', 'LARGE_INTEGER'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('ByteOffset', 'LARGE_INTEGER'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('FileInformationClass', 'FILE_INFORMATION_CLASS'),
+  \ cppapi#field('FileName', 'PUNICODE_STRING'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'FILE_INFORMATION_CLASS'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'FILE_INFORMATION_CLASS'),
+  \ cppapi#field('FileObject', 'PFILE_OBJECT'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('ClusterCount', 'ULONG'),
+  \ cppapi#field('DeleteHandle', 'HANDLE'),
+  \ cppapi#field('AdvanceOnly', 'BOOLEAN'),
+  \ cppapi#field('ReplaceIfExists', 'BOOLEAN'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('EaList', 'PVOID'),
+  \ cppapi#field('EaListLength', 'ULONG'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'FS_INFORMATION_CLASS'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'FS_INFORMATION_CLASS'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('OutputBufferLength', 'ULONG'),
+  \ cppapi#field('Type3InputBuffer', 'PVOID'),
+  \ cppapi#field('ByteOffset', 'LARGE_INTEGER'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('Length', 'PLARGE_INTEGER'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('OutputBufferLength', 'ULONG'),
+  \ cppapi#field('Type3InputBuffer', 'PVOID'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('SecurityInformation', 'SECURITY_INFORMATION'),
+  \ cppapi#field('SecurityDescriptor', 'PSECURITY_DESCRIPTOR'),
+  \ cppapi#field('SecurityInformation', 'SECURITY_INFORMATION'),
+  \ cppapi#field('DeviceObject', 'PDEVICE_OBJECT'),
+  \ cppapi#field('Vpb', 'PVPB'),
+  \ cppapi#field('DeviceObject', 'PDEVICE_OBJECT'),
+  \ cppapi#field('Vpb', 'PVPB'),
+  \ cppapi#field('*Srb', '_SCSI_REQUEST_BLOCK'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('SidList', 'PFILE_GET_QUOTA_INFORMATION'),
+  \ cppapi#field('SidListLength', 'ULONG'),
+  \ cppapi#field('StartSid', 'PSID'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('Type', 'DEVICE_RELATION_TYPE'),
+  \ cppapi#field('Interface', 'PINTERFACE'),
+  \ cppapi#field('InterfaceSpecificData', 'PVOID'),
+  \ cppapi#field('GUID', 'CONST'),
+  \ cppapi#field('Size', 'USHORT'),
+  \ cppapi#field('Version', 'USHORT'),
+  \ cppapi#field('Capabilities', 'PDEVICE_CAPABILITIES'),
+  \ cppapi#field('IoResourceRequirementList', 'PIO_RESOURCE_REQUIREMENTS_LIST'),
+  \ cppapi#field('Buffer', 'PVOID'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('Offset', 'ULONG'),
+  \ cppapi#field('WhichSpace', 'ULONG'),
+  \ cppapi#field('Lock', 'BOOLEAN'),
+  \ cppapi#field('IdType', 'BUS_QUERY_ID_TYPE'),
+  \ cppapi#field('DeviceTextType', 'DEVICE_TEXT_TYPE'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'LCID'),
+  \ cppapi#field('InPath', 'BOOLEAN'),
+  \ cppapi#field('Reserved[3]', 'BOOLEAN'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'DEVICE_USAGE_NOTIFICATION_TYPE'),
+  \ cppapi#field('PowerState', 'SYSTEM_POWER_STATE'),
+  \ cppapi#field('PowerSequence', 'PPOWER_SEQUENCE'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'POWER_ACTION'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'POWER_STATE'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'POWER_STATE_TYPE'),
+  \ cppapi#field('SystemContext', 'ULONG'),
+  \ cppapi#field('SystemPowerStateContext', 'SYSTEM_POWER_STATE_CONTEXT'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'POWER_ACTION'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'POWER_STATE'),
+  \ cppapi#field('SystemContext', 'ULONG'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'POWER_STATE_TYPE'),
+  \ cppapi#field('AllocatedResources', 'PCM_RESOURCE_LIST'),
+  \ cppapi#field('AllocatedResourcesTranslated', 'PCM_RESOURCE_LIST'),
+  \ cppapi#field('Buffer', 'PVOID'),
+  \ cppapi#field('BufferSize', 'ULONG'),
+  \ cppapi#field('DataPath', 'PVOID'),
+  \ cppapi#field('ProviderId', 'ULONG_PTR'),
+  \ cppapi#field('Argument1', 'PVOID'),
+  \ cppapi#field('Argument2', 'PVOID'),
+  \ cppapi#field('Argument3', 'PVOID'),
+  \ cppapi#field('Argument4', 'PVOID'),
+  \ ])
+
+call cppapi#struct('_IO_STACK_LOCATION::__anon200', '', [
+  \ cppapi#field('Create', '_IO_STACK_LOCATION::__anon200::__anon201'),
+  \ cppapi#field('DeviceCapabilities', '_IO_STACK_LOCATION::__anon200::__anon226'),
+  \ cppapi#field('DeviceIoControl', '_IO_STACK_LOCATION::__anon200::__anon216'),
+  \ cppapi#field('FileSystemControl', '_IO_STACK_LOCATION::__anon200::__anon214'),
+  \ cppapi#field('FilterResourceRequirements', '_IO_STACK_LOCATION::__anon200::__anon227'),
+  \ cppapi#field('LockControl', '_IO_STACK_LOCATION::__anon200::__anon215'),
+  \ cppapi#field('MountVolume', '_IO_STACK_LOCATION::__anon200::__anon219'),
+  \ cppapi#field('NotifyDirectory', '_IO_STACK_LOCATION::__anon200::__anon205'),
+  \ cppapi#field('Others', '_IO_STACK_LOCATION::__anon200::__anon240'),
+  \ cppapi#field('Power', '_IO_STACK_LOCATION::__anon200::__anon235'),
+  \ cppapi#field('Power', '_IO_STACK_LOCATION::__anon200::__anon237'),
+  \ cppapi#field('PowerSequence', '_IO_STACK_LOCATION::__anon200::__anon234'),
+  \ cppapi#field('QueryDeviceRelations', '_IO_STACK_LOCATION::__anon200::__anon224'),
+  \ cppapi#field('QueryDeviceText', '_IO_STACK_LOCATION::__anon200::__anon231'),
+  \ cppapi#field('QueryDirectory', '_IO_STACK_LOCATION::__anon200::__anon204'),
+  \ cppapi#field('QueryEa', '_IO_STACK_LOCATION::__anon200::__anon210'),
+  \ cppapi#field('QueryFile', '_IO_STACK_LOCATION::__anon200::__anon206'),
+  \ cppapi#field('QueryId', '_IO_STACK_LOCATION::__anon200::__anon230'),
+  \ cppapi#field('QueryInterface', '_IO_STACK_LOCATION::__anon200::__anon225'),
+  \ cppapi#field('QueryQuota', '_IO_STACK_LOCATION::__anon200::__anon222'),
+  \ cppapi#field('QuerySecurity', '_IO_STACK_LOCATION::__anon200::__anon217'),
+  \ cppapi#field('QueryVolume', '_IO_STACK_LOCATION::__anon200::__anon212'),
+  \ cppapi#field('Read', '_IO_STACK_LOCATION::__anon200::__anon202'),
+  \ cppapi#field('ReadWriteConfig', '_IO_STACK_LOCATION::__anon200::__anon228'),
+  \ cppapi#field('Scsi', '_IO_STACK_LOCATION::__anon200::__anon221'),
+  \ cppapi#field('SetEa', '_IO_STACK_LOCATION::__anon200::__anon211'),
+  \ cppapi#field('SetFile', '_IO_STACK_LOCATION::__anon200::__anon207'),
+  \ cppapi#field('SetLock', '_IO_STACK_LOCATION::__anon200::__anon229'),
+  \ cppapi#field('SetQuota', '_IO_STACK_LOCATION::__anon200::__anon223'),
+  \ cppapi#field('SetSecurity', '_IO_STACK_LOCATION::__anon200::__anon218'),
+  \ cppapi#field('SetVolume', '_IO_STACK_LOCATION::__anon200::__anon213'),
+  \ cppapi#field('StartDevice', '_IO_STACK_LOCATION::__anon200::__anon238'),
+  \ cppapi#field('UsageNotification', '_IO_STACK_LOCATION::__anon200::__anon232'),
+  \ cppapi#field('VerifyVolume', '_IO_STACK_LOCATION::__anon200::__anon220'),
+  \ cppapi#field('WMI', '_IO_STACK_LOCATION::__anon200::__anon239'),
+  \ cppapi#field('WaitWake', '_IO_STACK_LOCATION::__anon200::__anon233'),
+  \ cppapi#field('Write', '_IO_STACK_LOCATION::__anon200::__anon203'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'USHORT'),
+  \ cppapi#field('Options', 'ULONG'),
+  \ cppapi#field('SecurityContext', 'PIO_SECURITY_CONTEXT'),
+  \ cppapi#field('ShareAccess', 'USHORT'),
+  \ cppapi#field('ByteOffset', 'LARGE_INTEGER'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('ByteOffset', 'LARGE_INTEGER'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('FileInformationClass', 'FILE_INFORMATION_CLASS'),
+  \ cppapi#field('FileName', 'PUNICODE_STRING'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'FILE_INFORMATION_CLASS'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'FILE_INFORMATION_CLASS'),
+  \ cppapi#field('FileObject', 'PFILE_OBJECT'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('ClusterCount', 'ULONG'),
+  \ cppapi#field('DeleteHandle', 'HANDLE'),
+  \ cppapi#field('AdvanceOnly', 'BOOLEAN'),
+  \ cppapi#field('ReplaceIfExists', 'BOOLEAN'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('EaList', 'PVOID'),
+  \ cppapi#field('EaListLength', 'ULONG'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'FS_INFORMATION_CLASS'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'FS_INFORMATION_CLASS'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('OutputBufferLength', 'ULONG'),
+  \ cppapi#field('Type3InputBuffer', 'PVOID'),
+  \ cppapi#field('ByteOffset', 'LARGE_INTEGER'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('Length', 'PLARGE_INTEGER'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('OutputBufferLength', 'ULONG'),
+  \ cppapi#field('Type3InputBuffer', 'PVOID'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('SecurityInformation', 'SECURITY_INFORMATION'),
+  \ cppapi#field('SecurityDescriptor', 'PSECURITY_DESCRIPTOR'),
+  \ cppapi#field('SecurityInformation', 'SECURITY_INFORMATION'),
+  \ cppapi#field('DeviceObject', 'PDEVICE_OBJECT'),
+  \ cppapi#field('Vpb', 'PVPB'),
+  \ cppapi#field('DeviceObject', 'PDEVICE_OBJECT'),
+  \ cppapi#field('Vpb', 'PVPB'),
+  \ cppapi#field('*Srb', '_SCSI_REQUEST_BLOCK'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('SidList', 'PFILE_GET_QUOTA_INFORMATION'),
+  \ cppapi#field('SidListLength', 'ULONG'),
+  \ cppapi#field('StartSid', 'PSID'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('Type', 'DEVICE_RELATION_TYPE'),
+  \ cppapi#field('Interface', 'PINTERFACE'),
+  \ cppapi#field('InterfaceSpecificData', 'PVOID'),
+  \ cppapi#field('GUID', 'CONST'),
+  \ cppapi#field('Size', 'USHORT'),
+  \ cppapi#field('Version', 'USHORT'),
+  \ cppapi#field('Capabilities', 'PDEVICE_CAPABILITIES'),
+  \ cppapi#field('IoResourceRequirementList', 'PIO_RESOURCE_REQUIREMENTS_LIST'),
+  \ cppapi#field('Buffer', 'PVOID'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'ULONG'),
+  \ cppapi#field('Offset', 'ULONG'),
+  \ cppapi#field('WhichSpace', 'ULONG'),
+  \ cppapi#field('Lock', 'BOOLEAN'),
+  \ cppapi#field('IdType', 'BUS_QUERY_ID_TYPE'),
+  \ cppapi#field('DeviceTextType', 'DEVICE_TEXT_TYPE'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'LCID'),
+  \ cppapi#field('InPath', 'BOOLEAN'),
+  \ cppapi#field('Reserved[3]', 'BOOLEAN'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'DEVICE_USAGE_NOTIFICATION_TYPE'),
+  \ cppapi#field('PowerState', 'SYSTEM_POWER_STATE'),
+  \ cppapi#field('PowerSequence', 'PPOWER_SEQUENCE'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'POWER_ACTION'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'POWER_STATE'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'POWER_STATE_TYPE'),
+  \ cppapi#field('SystemContext', 'ULONG'),
+  \ cppapi#field('SystemPowerStateContext', 'SYSTEM_POWER_STATE_CONTEXT'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'POWER_ACTION'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'POWER_STATE'),
+  \ cppapi#field('SystemContext', 'ULONG'),
+  \ cppapi#field('POINTER_ALIGNMENT', 'POWER_STATE_TYPE'),
+  \ cppapi#field('AllocatedResources', 'PCM_RESOURCE_LIST'),
+  \ cppapi#field('AllocatedResourcesTranslated', 'PCM_RESOURCE_LIST'),
+  \ cppapi#field('Buffer', 'PVOID'),
+  \ cppapi#field('BufferSize', 'ULONG'),
+  \ cppapi#field('DataPath', 'PVOID'),
+  \ cppapi#field('ProviderId', 'ULONG_PTR'),
+  \ cppapi#field('Argument1', 'PVOID'),
+  \ cppapi#field('Argument2', 'PVOID'),
+  \ cppapi#field('Argument3', 'PVOID'),
+  \ cppapi#field('Argument4', 'PVOID'),
+  \ ])
+
+call cppapi#struct('_IO_STACK_LOCATION::__anon200::__anon221::_SCSI_REQUEST_BLOCK', '', [
   \ ])
 
 call cppapi#struct('IO_STATUS_BLOCK', '_IO_STATUS_BLOCK', [])
@@ -1465,10 +1532,88 @@ call cppapi#struct('PIO_STATUS_BLOCK32', '_IO_STATUS_BLOCK32', [])
 call cppapi#struct('_IO_STATUS_BLOCK32', '', [
   \ cppapi#field('Information', 'ULONG'),
   \ cppapi#field('Status', 'NTSTATUS'),
-  \ cppapi#field('DUMMYUNIONNAME', '}'),
+  \ cppapi#field('DUMMYUNIONNAME', '_IO_STATUS_BLOCK::__anon121'),
   \ cppapi#field('Information', 'ULONG_PTR'),
   \ cppapi#field('Pointer', 'PVOID'),
   \ cppapi#field('Status', 'NTSTATUS'),
+  \ ])
+
+call cppapi#struct('_IO_STATUS_BLOCK::__anon121', '', [
+  \ cppapi#field('Pointer', 'PVOID'),
+  \ cppapi#field('Status', 'NTSTATUS'),
+  \ ])
+
+call cppapi#struct('IRP', '_IRP', [])
+call cppapi#struct('PIRP', '_IRP', [])
+call cppapi#struct('_IRP', '', [
+  \ cppapi#field('AllocationFlags', 'UCHAR'),
+  \ cppapi#field('ApcEnvironment', 'CCHAR'),
+  \ cppapi#field('AssociatedIrp', '_IRP::__anon188'),
+  \ cppapi#field('Cancel', 'BOOLEAN'),
+  \ cppapi#field('CancelIrql', 'KIRQL'),
+  \ cppapi#field('CancelRoutine', 'PDRIVER_CANCEL'),
+  \ cppapi#field('CurrentLocation', 'CHAR'),
+  \ cppapi#field('Flags', 'ULONG'),
+  \ cppapi#field('IoStatus', 'IO_STATUS_BLOCK'),
+  \ cppapi#field('MdlAddress', 'PMDL'),
+  \ cppapi#field('Overlay', '_IRP::__anon189'),
+  \ cppapi#field('PendingReturned', 'BOOLEAN'),
+  \ cppapi#field('RequestorMode', 'KPROCESSOR_MODE'),
+  \ cppapi#field('Size', 'USHORT'),
+  \ cppapi#field('StackCount', 'CHAR'),
+  \ cppapi#field('Tail', '_IRP::__anon192'),
+  \ cppapi#field('ThreadListEntry', 'LIST_ENTRY'),
+  \ cppapi#field('Type', 'CSHORT'),
+  \ cppapi#field('UserBuffer', 'PVOID'),
+  \ cppapi#field('UserEvent', 'PKEVENT'),
+  \ cppapi#field('UserIosb', 'PIO_STATUS_BLOCK'),
+  \ cppapi#field('IrpCount', 'LONG'),
+  \ cppapi#field('*MasterIrp', '_IRP'),
+  \ cppapi#field('SystemBuffer', 'PVOID'),
+  \ cppapi#field('AllocationSize', 'LARGE_INTEGER'),
+  \ cppapi#field('AsynchronousParameters', '_IRP::__anon189::__anon190'),
+  \ cppapi#field('UserApcContext', 'PVOID'),
+  \ cppapi#field('IssuingProcess', 'PVOID'),
+  \ cppapi#field('UserApcRoutine', 'PIO_APC_ROUTINE'),
+  \ cppapi#field('Apc', 'KAPC'),
+  \ cppapi#field('CompletionKey', 'PVOID'),
+  \ cppapi#field('Overlay', '_IRP::__anon192::__anon193'),
+  \ cppapi#field('AuxiliaryBuffer', 'PCHAR'),
+  \ cppapi#field('OriginalFileObject', 'PFILE_OBJECT'),
+  \ cppapi#field('Thread', 'PETHREAD'),
+  \ cppapi#field('DeviceQueueEntry', 'KDEVICE_QUEUE_ENTRY'),
+  \ cppapi#field('DriverContext[4]', 'PVOID'),
+  \ cppapi#field('ListEntry', 'LIST_ENTRY'),
+  \ cppapi#field('*CurrentStackLocation', '_IO_STACK_LOCATION'),
+  \ cppapi#field('PacketType', 'ULONG'),
+  \ ])
+
+call cppapi#struct('_IRP::__anon188', '', [
+  \ cppapi#field('IrpCount', 'LONG'),
+  \ cppapi#field('*MasterIrp', '_IRP'),
+  \ cppapi#field('SystemBuffer', 'PVOID'),
+  \ ])
+
+call cppapi#struct('_IRP::__anon189', '', [
+  \ cppapi#field('AllocationSize', 'LARGE_INTEGER'),
+  \ cppapi#field('AsynchronousParameters', '_IRP::__anon189::__anon190'),
+  \ cppapi#field('UserApcContext', 'PVOID'),
+  \ cppapi#field('IssuingProcess', 'PVOID'),
+  \ cppapi#field('UserApcRoutine', 'PIO_APC_ROUTINE'),
+  \ ])
+
+call cppapi#struct('_IRP::__anon192', '', [
+  \ cppapi#field('Apc', 'KAPC'),
+  \ cppapi#field('CompletionKey', 'PVOID'),
+  \ cppapi#field('Overlay', '_IRP::__anon192::__anon193'),
+  \ cppapi#field('AuxiliaryBuffer', 'PCHAR'),
+  \ cppapi#field('OriginalFileObject', 'PFILE_OBJECT'),
+  \ cppapi#field('Thread', 'PETHREAD'),
+  \ cppapi#field('DeviceQueueEntry', 'KDEVICE_QUEUE_ENTRY'),
+  \ cppapi#field('DriverContext[4]', 'PVOID'),
+  \ cppapi#field('ListEntry', 'LIST_ENTRY'),
+  \ cppapi#field('*CurrentStackLocation', '_IO_STACK_LOCATION'),
+  \ cppapi#field('PacketType', 'ULONG'),
   \ ])
 
 call cppapi#struct('KAPC', '_KAPC', [])
@@ -1488,7 +1633,21 @@ call cppapi#struct('_KAPC', '', [
   \ cppapi#field('SpareLong0', 'ULONG'),
   \ cppapi#field('SystemArgument1', 'PVOID'),
   \ cppapi#field('SystemArgument2', 'PVOID'),
-  \ cppapi#field('_KTHREAD', 'struct'),
+  \ cppapi#field('*Thread', '_KTHREAD'),
+  \ cppapi#field('Type', 'UCHAR'),
+  \ ])
+
+call cppapi#struct('KDPC', '_KDPC', [])
+call cppapi#struct('PKDPC', '_KDPC', [])
+call cppapi#struct('_KDPC', '', [
+  \ cppapi#field('DeferredContext', 'PVOID'),
+  \ cppapi#field('DeferredRoutine', 'PKDEFERRED_ROUTINE'),
+  \ cppapi#field('DpcData', 'PVOID'),
+  \ cppapi#field('DpcListEntry', 'LIST_ENTRY'),
+  \ cppapi#field('Importance', 'UCHAR'),
+  \ cppapi#field('USHORT', 'volatile'),
+  \ cppapi#field('SystemArgument1', 'PVOID'),
+  \ cppapi#field('SystemArgument2', 'PVOID'),
   \ cppapi#field('Type', 'UCHAR'),
   \ ])
 
@@ -1658,6 +1817,13 @@ call cppapi#struct('_KLOCK_QUEUE_HANDLE', '', [
   \ cppapi#field('OldIrql', 'KIRQL'),
   \ ])
 
+call cppapi#struct('KSPIN_LOCK_QUEUE', '_KSPIN_LOCK_QUEUE', [])
+call cppapi#struct('PKSPIN_LOCK_QUEUE', '_KSPIN_LOCK_QUEUE', [])
+call cppapi#struct('_KSPIN_LOCK_QUEUE', '', [
+  \ cppapi#field('volatile', 'PKSPIN_LOCK'),
+  \ cppapi#field('*', '_KSPIN_LOCK_QUEUE'),
+  \ ])
+
 call cppapi#struct('KSYSTEM_TIME', '_KSYSTEM_TIME', [])
 call cppapi#struct('PKSYSTEM_TIME', '_KSYSTEM_TIME', [])
 call cppapi#struct('_KSYSTEM_TIME', '', [
@@ -1669,7 +1835,7 @@ call cppapi#struct('_KSYSTEM_TIME', '', [
 call cppapi#struct('KTIMER', '_KTIMER', [])
 call cppapi#struct('PKTIMER', '_KTIMER', [])
 call cppapi#struct('_KTIMER', '', [
-  \ cppapi#field('_KDPC', 'struct'),
+  \ cppapi#field('*Dpc', '_KDPC'),
   \ cppapi#field('DueTime', 'ULARGE_INTEGER'),
   \ cppapi#field('Header', 'DISPATCHER_HEADER'),
   \ cppapi#field('Period', 'ULONG'),
@@ -1685,11 +1851,97 @@ call cppapi#struct('_KTMOBJECT_CURSOR', '', [
   \ cppapi#field('ObjectIds[1]', 'GUID'),
   \ ])
 
+call cppapi#struct('LOOKASIDE_LIST_EX', '_LOOKASIDE_LIST_EX', [])
+call cppapi#struct('PLOOKASIDE_LIST_EX', '_LOOKASIDE_LIST_EX', [])
+call cppapi#struct('_LOOKASIDE_LIST_EX', '', [
+  \ cppapi#field('L', 'GENERAL_LOOKASIDE_POOL'),
+  \ ])
+
 call cppapi#struct('LUID_AND_ATTRIBUTES', '_LUID_AND_ATTRIBUTES', [])
 call cppapi#struct('PLUID_AND_ATTRIBUTES', '_LUID_AND_ATTRIBUTES', [])
 call cppapi#struct('_LUID_AND_ATTRIBUTES', '', [
   \ cppapi#field('Attributes', 'ULONG'),
   \ cppapi#field('Luid', 'LUID'),
+  \ ])
+
+call cppapi#struct('MDL', '_MDL', [])
+call cppapi#struct('PMDL', '_MDL', [])
+call cppapi#struct('_MDL', '', [
+  \ ])
+
+call cppapi#struct('AST_IO_MDL_READ', 'FAST_IO_MDL_READ', [])
+call cppapi#struct('PAST_IO_MDL_READ', 'FAST_IO_MDL_READ', [])
+call cppapi#struct('FAST_IO_MDL_READ', '', [
+  \ ])
+
+call cppapi#struct('AST_IO_MDL_READ_COMPLETE', 'FAST_IO_MDL_READ_COMPLETE', [])
+call cppapi#struct('PAST_IO_MDL_READ_COMPLETE', 'FAST_IO_MDL_READ_COMPLETE', [])
+call cppapi#struct('FAST_IO_MDL_READ_COMPLETE', '', [
+  \ ])
+
+call cppapi#struct('AST_IO_MDL_READ_COMPLETE_COMPRESSED', 'FAST_IO_MDL_READ_COMPLETE_COMPRESSED', [])
+call cppapi#struct('PAST_IO_MDL_READ_COMPLETE_COMPRESSED', 'FAST_IO_MDL_READ_COMPLETE_COMPRESSED', [])
+call cppapi#struct('FAST_IO_MDL_READ_COMPLETE_COMPRESSED', '', [
+  \ ])
+
+call cppapi#struct('AST_IO_MDL_WRITE_COMPLETE', 'FAST_IO_MDL_WRITE_COMPLETE', [])
+call cppapi#struct('PAST_IO_MDL_WRITE_COMPLETE', 'FAST_IO_MDL_WRITE_COMPLETE', [])
+call cppapi#struct('FAST_IO_MDL_WRITE_COMPLETE', '', [
+  \ ])
+
+call cppapi#struct('AST_IO_MDL_WRITE_COMPLETE_COMPRESSED', 'FAST_IO_MDL_WRITE_COMPLETE_COMPRESSED', [])
+call cppapi#struct('PAST_IO_MDL_WRITE_COMPLETE_COMPRESSED', 'FAST_IO_MDL_WRITE_COMPLETE_COMPRESSED', [])
+call cppapi#struct('FAST_IO_MDL_WRITE_COMPLETE_COMPRESSED', '', [
+  \ ])
+
+call cppapi#struct('AST_IO_PREPARE_MDL_WRITE', 'FAST_IO_PREPARE_MDL_WRITE', [])
+call cppapi#struct('PAST_IO_PREPARE_MDL_WRITE', 'FAST_IO_PREPARE_MDL_WRITE', [])
+call cppapi#struct('FAST_IO_PREPARE_MDL_WRITE', '', [
+  \ ])
+
+call cppapi#struct('FAST_IO_MDL_READ', 'PFAST_IO_MDL_READ', [])
+call cppapi#struct('PFAST_IO_MDL_READ', 'PFAST_IO_MDL_READ', [])
+call cppapi#struct('PFAST_IO_MDL_READ', '', [
+  \ ])
+
+call cppapi#struct('FAST_IO_MDL_READ_COMPLETE', 'PFAST_IO_MDL_READ_COMPLETE', [])
+call cppapi#struct('PFAST_IO_MDL_READ_COMPLETE', 'PFAST_IO_MDL_READ_COMPLETE', [])
+call cppapi#struct('PFAST_IO_MDL_READ_COMPLETE', '', [
+  \ ])
+
+call cppapi#struct('FAST_IO_MDL_READ_COMPLETE_COMPRESSED', 'PFAST_IO_MDL_READ_COMPLETE_COMPRESSED', [])
+call cppapi#struct('PFAST_IO_MDL_READ_COMPLETE_COMPRESSED', 'PFAST_IO_MDL_READ_COMPLETE_COMPRESSED', [])
+call cppapi#struct('PFAST_IO_MDL_READ_COMPLETE_COMPRESSED', '', [
+  \ ])
+
+call cppapi#struct('FAST_IO_MDL_WRITE_COMPLETE', 'PFAST_IO_MDL_WRITE_COMPLETE', [])
+call cppapi#struct('PFAST_IO_MDL_WRITE_COMPLETE', 'PFAST_IO_MDL_WRITE_COMPLETE', [])
+call cppapi#struct('PFAST_IO_MDL_WRITE_COMPLETE', '', [
+  \ ])
+
+call cppapi#struct('FAST_IO_MDL_WRITE_COMPLETE_COMPRESSED', 'PFAST_IO_MDL_WRITE_COMPLETE_COMPRESSED', [])
+call cppapi#struct('PFAST_IO_MDL_WRITE_COMPLETE_COMPRESSED', 'PFAST_IO_MDL_WRITE_COMPLETE_COMPRESSED', [])
+call cppapi#struct('PFAST_IO_MDL_WRITE_COMPLETE_COMPRESSED', '', [
+  \ ])
+
+call cppapi#struct('FAST_IO_PREPARE_MDL_WRITE', 'PFAST_IO_PREPARE_MDL_WRITE', [])
+call cppapi#struct('PFAST_IO_PREPARE_MDL_WRITE', 'PFAST_IO_PREPARE_MDL_WRITE', [])
+call cppapi#struct('PFAST_IO_PREPARE_MDL_WRITE', '', [
+  \ cppapi#field('ByteCount', 'ULONG'),
+  \ cppapi#field('ByteOffset', 'ULONG'),
+  \ cppapi#field('MappedSystemVa', 'PVOID'),
+  \ cppapi#field('MdlFlags', 'CSHORT'),
+  \ cppapi#field('*Next', '_MDL'),
+  \ cppapi#field('*Process', '_EPROCESS'),
+  \ cppapi#field('Size', 'CSHORT'),
+  \ cppapi#field('StartVa', 'PVOID'),
+  \ ])
+
+call cppapi#struct('NPAGED_LOOKASIDE_LIST', '_NPAGED_LOOKASIDE_LIST', [])
+call cppapi#struct('PNPAGED_LOOKASIDE_LIST', '_NPAGED_LOOKASIDE_LIST', [])
+call cppapi#struct('_NPAGED_LOOKASIDE_LIST', '', [
+  \ cppapi#field('L', 'GENERAL_LOOKASIDE'),
+  \ cppapi#field('Lock', 'KSPIN_LOCK'),
   \ ])
 
 call cppapi#struct('OBJECT_NAME_INFORMATION', '_OBJECT_NAME_INFORMATION', [])
@@ -1706,6 +1958,13 @@ call cppapi#struct('_OWNER_ENTRY', '', [
   \ cppapi#field('IoPriorityBoosted', 'ULONG'),
   \ cppapi#field('OwnerCount', 'ULONG'),
   \ cppapi#field('OwnerReferenced', 'ULONG'),
+  \ ])
+
+call cppapi#struct('PAGED_LOOKASIDE_LIST', '_PAGED_LOOKASIDE_LIST', [])
+call cppapi#struct('PPAGED_LOOKASIDE_LIST', '_PAGED_LOOKASIDE_LIST', [])
+call cppapi#struct('_PAGED_LOOKASIDE_LIST', '', [
+  \ cppapi#field('L', 'GENERAL_LOOKASIDE'),
+  \ cppapi#field('Lock', 'FAST_MUTEX'),
   \ ])
 
 call cppapi#struct('POWER_SEQUENCE', '_POWER_SEQUENCE', [])
@@ -1729,6 +1988,14 @@ call cppapi#struct('INITIAL_PRIVILEGE_SET', '_INITIAL_PRIVILEGE_SET', [
 call cppapi#struct('INITIAL_PRIVILEGE_SET', 'PINITIAL_PRIVILEGE_SET', [])
 call cppapi#struct('PINITIAL_PRIVILEGE_SET', 'PINITIAL_PRIVILEGE_SET', [])
 call cppapi#struct('PINITIAL_PRIVILEGE_SET', '_INITIAL_PRIVILEGE_SET', [
+  \ ])
+
+call cppapi#struct('REG_CALLBACK_CONTEXT_CLEANUP_INFORMATION', '_REG_CALLBACK_CONTEXT_CLEANUP_INFORMATION', [])
+call cppapi#struct('PREG_CALLBACK_CONTEXT_CLEANUP_INFORMATION', '_REG_CALLBACK_CONTEXT_CLEANUP_INFORMATION', [])
+call cppapi#struct('_REG_CALLBACK_CONTEXT_CLEANUP_INFORMATION', '', [
+  \ cppapi#field('Object', 'PVOID'),
+  \ cppapi#field('ObjectContext', 'PVOID'),
+  \ cppapi#field('Reserved', 'PVOID'),
   \ ])
 
 call cppapi#struct('REG_CREATE_KEY_INFORMATION', '_REG_CREATE_KEY_INFORMATION', [])
@@ -2090,6 +2357,24 @@ call cppapi#struct('_SECTION_OBJECT_POINTERS', '', [
   \ cppapi#field('SharedCacheMap', 'PVOID'),
   \ ])
 
+call cppapi#struct('SECURITY_QUALITY_OF_SERVICE', '_SECURITY_QUALITY_OF_SERVICE', [])
+call cppapi#struct('PSECURITY_QUALITY_OF_SERVICE', '_SECURITY_QUALITY_OF_SERVICE', [])
+call cppapi#struct('_SECURITY_QUALITY_OF_SERVICE', '', [
+  \ cppapi#field('ContextTrackingMode', 'SECURITY_CONTEXT_TRACKING_MODE'),
+  \ cppapi#field('EffectiveOnly', 'BOOLEAN'),
+  \ cppapi#field('ImpersonationLevel', 'SECURITY_IMPERSONATION_LEVEL'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ ])
+
+call cppapi#struct('SECURITY_SUBJECT_CONTEXT', '_SECURITY_SUBJECT_CONTEXT', [])
+call cppapi#struct('PSECURITY_SUBJECT_CONTEXT', '_SECURITY_SUBJECT_CONTEXT', [])
+call cppapi#struct('_SECURITY_SUBJECT_CONTEXT', '', [
+  \ cppapi#field('ClientToken', 'PACCESS_TOKEN'),
+  \ cppapi#field('ImpersonationLevel', 'SECURITY_IMPERSONATION_LEVEL'),
+  \ cppapi#field('PrimaryToken', 'PACCESS_TOKEN'),
+  \ cppapi#field('ProcessAuditId', 'PVOID'),
+  \ ])
+
 call cppapi#struct('SE_ADT_ACCESS_REASON', '_SE_ADT_ACCESS_REASON', [])
 call cppapi#struct('PSE_ADT_ACCESS_REASON', '_SE_ADT_ACCESS_REASON', [])
 call cppapi#struct('_SE_ADT_ACCESS_REASON', '', [
@@ -2098,6 +2383,15 @@ call cppapi#struct('_SE_ADT_ACCESS_REASON', '', [
   \ cppapi#field('AccessReasons[32]', 'ULONG'),
   \ cppapi#field('ObjectTypeIndex', 'ULONG'),
   \ cppapi#field('SecurityDescriptor', 'PSECURITY_DESCRIPTOR'),
+  \ ])
+
+call cppapi#struct('SE_ADT_OBJECT_TYPE', '_SE_ADT_OBJECT_TYPE', [])
+call cppapi#struct('PSE_ADT_OBJECT_TYPE', '_SE_ADT_OBJECT_TYPE', [])
+call cppapi#struct('_SE_ADT_OBJECT_TYPE', '', [
+  \ cppapi#field('AccessMask', 'ACCESS_MASK'),
+  \ cppapi#field('Flags', 'USHORT'),
+  \ cppapi#field('Level', 'USHORT'),
+  \ cppapi#field('ObjectType', 'GUID'),
   \ ])
 
 call cppapi#struct('SE_ADT_PARAMETER_ARRAY', '_SE_ADT_PARAMETER_ARRAY', [])
@@ -2149,6 +2443,33 @@ call cppapi#struct('_SLIST_ENTRY32', '', [
   \ cppapi#field('Next', 'ULONG'),
   \ ])
 
+call cppapi#struct('SYSTEM_POWER_STATE_CONTEXT', '_SYSTEM_POWER_STATE_CONTEXT', [])
+call cppapi#struct('PSYSTEM_POWER_STATE_CONTEXT', '_SYSTEM_POWER_STATE_CONTEXT', [])
+call cppapi#struct('_SYSTEM_POWER_STATE_CONTEXT', '', [
+  \ cppapi#field('DUMMYUNIONNAME', '_SYSTEM_POWER_STATE_CONTEXT::__anon123'),
+  \ cppapi#field('ContextAsUlong', 'ULONG'),
+  \ cppapi#field('DUMMYNAME', '_SYSTEM_POWER_STATE_CONTEXT::__anon123::__anon124'),
+  \ cppapi#field('CurrentSystemState', 'ULONG'),
+  \ cppapi#field('EffectiveSystemState', 'ULONG'),
+  \ cppapi#field('IgnoreHibernationPath', 'ULONG'),
+  \ cppapi#field('PseudoTransition', 'ULONG'),
+  \ cppapi#field('Reserved1', 'ULONG'),
+  \ cppapi#field('Reserved2', 'ULONG'),
+  \ cppapi#field('TargetSystemState', 'ULONG'),
+  \ ])
+
+call cppapi#struct('_SYSTEM_POWER_STATE_CONTEXT::__anon123', '', [
+  \ cppapi#field('ContextAsUlong', 'ULONG'),
+  \ cppapi#field('DUMMYNAME', '_SYSTEM_POWER_STATE_CONTEXT::__anon123::__anon124'),
+  \ cppapi#field('CurrentSystemState', 'ULONG'),
+  \ cppapi#field('EffectiveSystemState', 'ULONG'),
+  \ cppapi#field('IgnoreHibernationPath', 'ULONG'),
+  \ cppapi#field('PseudoTransition', 'ULONG'),
+  \ cppapi#field('Reserved1', 'ULONG'),
+  \ cppapi#field('Reserved2', 'ULONG'),
+  \ cppapi#field('TargetSystemState', 'ULONG'),
+  \ ])
+
 call cppapi#struct('TIME_FIELDS', '_TIME_FIELDS', [])
 call cppapi#struct('PTIME_FIELDS', '_TIME_FIELDS', [])
 call cppapi#struct('_TIME_FIELDS', '', [
@@ -2172,7 +2493,7 @@ call cppapi#struct('_TRANSACTIONMANAGER_BASIC_INFORMATION', '', [
 call cppapi#struct('TRANSACTIONMANAGER_LOGPATH_INFORMATION', '_TRANSACTIONMANAGER_LOGPATH_INFORMATION', [])
 call cppapi#struct('PTRANSACTIONMANAGER_LOGPATH_INFORMATION', '_TRANSACTIONMANAGER_LOGPATH_INFORMATION', [])
 call cppapi#struct('_TRANSACTIONMANAGER_LOGPATH_INFORMATION', '', [
-  \ cppapi#field('WCHAR', '__field_ecount(LogPathLength)'),
+  \ cppapi#field('WCHAR', '(LogPathLength)'),
   \ cppapi#field('LogPathLength', 'ULONG'),
   \ ])
 
@@ -2246,39 +2567,49 @@ call cppapi#struct('_TRANSACTION_SUPERIOR_ENLISTMENT_INFORMATION', '', [
   \ cppapi#field('SuperiorEnlistmentPair', 'TRANSACTION_ENLISTMENT_PAIR'),
   \ ])
 
+call cppapi#struct('VPB', '_VPB', [])
+call cppapi#struct('PVPB', '_VPB', [])
+call cppapi#struct('_VPB', '', [
+  \ cppapi#field('*DeviceObject', '_DEVICE_OBJECT'),
+  \ cppapi#field('Flags', 'USHORT'),
+  \ cppapi#field('*RealDevice', '_DEVICE_OBJECT'),
+  \ cppapi#field('ReferenceCount', 'ULONG'),
+  \ cppapi#field('SerialNumber', 'ULONG'),
+  \ cppapi#field('Size', 'CSHORT'),
+  \ cppapi#field('Type', 'CSHORT'),
+  \ cppapi#field('VolumeLabel[MAXIMUM_VOLUME_LABEL_LENGTH', 'WCHAR'),
+  \ cppapi#field('VolumeLabelLength', 'USHORT'),
+  \ ])
+
+call cppapi#struct('WAIT_CONTEXT_BLOCK', '_WAIT_CONTEXT_BLOCK', [])
+call cppapi#struct('PWAIT_CONTEXT_BLOCK', '_WAIT_CONTEXT_BLOCK', [])
+call cppapi#struct('_WAIT_CONTEXT_BLOCK', '', [
+  \ cppapi#field('BufferChainingDpc', 'PKDPC'),
+  \ cppapi#field('CurrentIrp', 'PVOID'),
+  \ cppapi#field('DeviceContext', 'PVOID'),
+  \ cppapi#field('DeviceObject', 'PVOID'),
+  \ cppapi#field('DeviceRoutine', 'PDRIVER_CONTROL'),
+  \ cppapi#field('NumberOfMapRegisters', 'ULONG'),
+  \ cppapi#field('WaitQueueEntry', 'KDEVICE_QUEUE_ENTRY'),
+  \ ])
+
 call cppapi#struct('WORK_QUEUE_ITEM', '_WORK_QUEUE_ITEM', [])
 call cppapi#struct('PWORK_QUEUE_ITEM', '_WORK_QUEUE_ITEM', [])
 call cppapi#struct('_WORK_QUEUE_ITEM', '', [
   \ cppapi#field('List', 'LIST_ENTRY'),
-  \ cppapi#field('PVOID', '__volatile'),
+  \ cppapi#field('Parameter', 'PVOID'),
   \ cppapi#field('WorkerRoutine', 'PWORKER_THREAD_ROUTINE'),
   \ ])
 
-call cppapi#struct('MDL', '_MDL', [])
-call cppapi#struct('PMDL', '_MDL', [])
-call cppapi#struct('_MDL', '', [
-  \ cppapi#field('ByteCount', 'ULONG'),
-  \ cppapi#field('ByteOffset', 'ULONG'),
-  \ cppapi#field('MappedSystemVa', 'PVOID'),
-  \ cppapi#field('MdlFlags', 'CSHORT'),
-  \ cppapi#field('_MDL', 'struct'),
-  \ cppapi#field('_EPROCESS', 'struct'),
-  \ cppapi#field('Size', 'CSHORT'),
-  \ cppapi#field('StartVa', 'PVOID'),
-  \ cppapi#field('MdlAddress', 'PMDL'),
-  \ cppapi#field('MdlFlags', 'CSHORT'),
-  \ cppapi#field('MdlRead', 'PFAST_IO_MDL_READ'),
-  \ cppapi#field('MdlReadComplete', 'PFAST_IO_MDL_READ_COMPLETE'),
-  \ cppapi#field('MdlReadCompleteCompressed', 'PFAST_IO_MDL_READ_COMPLETE_COMPRESSED'),
-  \ cppapi#field('MdlWriteComplete', 'PFAST_IO_MDL_WRITE_COMPLETE'),
-  \ cppapi#field('MdlWriteCompleteCompressed', 'PFAST_IO_MDL_WRITE_COMPLETE_COMPRESSED'),
-  \ cppapi#field('PrepareMdlWrite', 'PFAST_IO_PREPARE_MDL_WRITE'),
-  \ cppapi#field('MdlRead', 'PFAST_IO_MDL_READ'),
-  \ cppapi#field('MdlReadComplete', 'PFAST_IO_MDL_READ_COMPLETE'),
-  \ cppapi#field('MdlReadCompleteCompressed', 'PFAST_IO_MDL_READ_COMPLETE_COMPRESSED'),
-  \ cppapi#field('MdlWriteComplete', 'PFAST_IO_MDL_WRITE_COMPLETE'),
-  \ cppapi#field('MdlWriteCompleteCompressed', 'PFAST_IO_MDL_WRITE_COMPLETE_COMPRESSED'),
-  \ cppapi#field('PrepareMdlWrite', 'PFAST_IO_PREPARE_MDL_WRITE'),
-  \ cppapi#field('MdlAddress', 'PMDL'),
+call cppapi#struct('XSTATE_CONTEXT', '_XSTATE_CONTEXT', [])
+call cppapi#struct('PXSTATE_CONTEXT', '_XSTATE_CONTEXT', [])
+call cppapi#struct('_XSTATE_CONTEXT', '', [
+  \ cppapi#field('PXSAVE_AREA', '(Length)'),
+  \ cppapi#field('Buffer', 'PVOID'),
+  \ cppapi#field('Length', 'ULONG'),
+  \ cppapi#field('Mask', 'ULONG64'),
+  \ cppapi#field('Reserved1', 'ULONG'),
+  \ cppapi#field('Reserved2', 'ULONG'),
+  \ cppapi#field('Reserved3', 'ULONG'),
   \ ])
 
