@@ -1,4 +1,47 @@
 
+call cppapi#struct('PPHYSICAL_ADDRESS', 'LARGE_INTEGER', [])
+call cppapi#struct('PHYSICAL_ADDRESS', 'LARGE_INTEGER', [])
+call cppapi#struct('PLARGE_INTEGER', 'LARGE_INTEGER', [])
+call cppapi#struct('LARGE_INTEGER', '', [
+  \ cppapi#field('QuadPart', 'LONGLONG'),
+  \ cppapi#field('u', 'LARGE_INTEGER.u'),
+  \ ])
+call cppapi#struct('LARGE_INTEGER.u', '', [
+  \ cppapi#field('LowPart', 'ULONG'),
+  \ cppapi#field('HighPart', 'LONG'),
+  \ ])
+
+call cppapi#struct('PUNICODE_STRING', 'UNICODE_STRING', [])
+call cppapi#struct('UNICODE_STRING', '', [
+  \ cppapi#field('Length', 'USHORT'),
+  \ cppapi#field('MaximumLength', 'USHORT'),
+  \ cppapi#field('Buffer', 'PWCH'),
+  \ ])
+
+call cppapi#struct('STRING32', 'STRING', [])
+call cppapi#struct('PSTRING32', 'STRING', [])
+call cppapi#struct('PANSI_STRING', 'STRING', [])
+call cppapi#struct('ANSI_STRING', 'STRING', [])
+call cppapi#struct('PSTRING', 'STRING', [])
+call cppapi#struct('STRING', '', [
+  \ cppapi#field('Length', 'USHORT'),
+  \ cppapi#field('MaximumLength', 'USHORT'),
+  \ cppapi#field('Buffer', 'PCHAR'),
+  \ ])
+
+call cppapi#struct('RESTRICTED_POINTER', 'LIST_ENTRY', [])
+call cppapi#struct('PRLIST_ENTRY', 'LIST_ENTRY', [])
+call cppapi#struct('PLIST_ENTRY', 'LIST_ENTRY', [])
+call cppapi#struct('LIST_ENTRY', '', [
+  \ cppapi#field('Flink', 'LIST_ENTRY'),
+  \ cppapi#field('Blink', 'LIST_ENTRY'),
+  \ ])
+
+call cppapi#struct('PSINGLE_LIST_ENTRY', 'SINGLE_LIST_ENTRY', [])
+call cppapi#struct('SINGLE_LIST_ENTRY', '', [
+  \ cppapi#field('Next', 'SINGLE_LIST_ENTRY'),
+  \ ])
+
 call cppapi#struct('ACCESS_STATE', '_ACCESS_STATE', [])
 call cppapi#struct('PACCESS_STATE', '_ACCESS_STATE', [])
 call cppapi#struct('_ACCESS_STATE', '', [

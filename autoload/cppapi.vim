@@ -22,12 +22,12 @@ function! cppapi#t()
 endfunction
 
 function! cppapi#complete(findstart, base)
+  let ret = []
   try
     if exists('g:cppapi_pre_omnifunc') && g:cppapi_pre_omnifunc != ''
       exe 'let ret = ' . g:cppapi_pre_omnifunc . '(a:findstart, a:base)'
     endif
   catch /.*/
-    let ret = []
   endtry
 
   if a:findstart
@@ -140,10 +140,13 @@ function! s:class_member_completion(base, res)
       continue
     endif
     if !cppapi#isClassExist(class)
-      if exists('item')
-        unlet item
+      let item = cppapi#getTag(class)
+      if empty(item)
+        if exists('item')
+          unlet item
+        endif
+        break
       endif
-      break
     else
       let item = cppapi#getClass(class)
     endif
@@ -165,8 +168,15 @@ function! s:class_member_completion(base, res)
       if _break == 1
         break
       endif
-      if has_key(item, 'extend') && item.extend != '' && cppapi#isClassExist(item.extend)
-        let item = cppapi#getClass(item.extend)
+      if has_key(item, 'extend') && item.extend != ''
+        if cppapi#isClassExist(item.extend)
+          let item = cppapi#getClass(item.extend)
+        else
+          let item = cppapi#getTag(item.extend)
+          if empty(item)
+            unlet item
+          endif
+        endif
       else
         return
       endif
@@ -182,12 +192,15 @@ endfunction
 
 function! s:attr_completion(tag, base, res)
   if !cppapi#isClassExist(a:tag)
-    return
+    let item = cppapi#getTag(a:tag)
+    if empty(item)
+      return
+    endif
+  else
+    let item = cppapi#getClass(a:tag)
   endif
 
-  let item = cppapi#getClass(a:tag)
   for member in item.members
-
     " negrect get_ and set_
     if member.name =~ '^\(get_\|set_\)'
       continue
@@ -225,12 +238,12 @@ function! s:analize(line, cur)
 
   " resolve complete mode [CLASS/MEMBER]
   let idx = cur
-  while idx > 0 && line[idx] !~ '[. \t(;]'
+  while idx > 0 && line[idx] !~ '[>. \t(;]'
     let idx -= 1
   endwhile
   if cur <= 0 || line[idx] =~ '[ \t]'
     let compmode = s:MODE_CLASS
-  elseif line[idx] == '.'
+  elseif line[idx] == '.' || line[idx] == '>'
     let compmode = s:MODE_MEMBER
   else
     let compmode = s:MODE_CLASS
@@ -240,7 +253,7 @@ function! s:analize(line, cur)
   let vstart = cur
   let pstart = -1
   while vstart > 0 && line[vstart - 1] !~ '[ \t"]'
-    if pstart == -1 && line[vstart - 1] == '.'
+    if pstart == -1 && ( line[vstart - 1] == '.' || line[vstart - 1] == '>' )
       let pstart = vstart
     endif
     let vstart -= 1
@@ -252,9 +265,9 @@ function! s:analize(line, cur)
 
   " separate variable by dot and resolve type.
   let type = ''
-  let parts = split(s:normalize_prop(variable), '\.')
+  let parts = split(s:normalize_prop(variable), '\(\.\|->\)')
   if !empty(parts) && parts[0] != '='
-    if line[cur-1] == '.'
+    if line[cur-1] == '.' || line[cur-1] == '>'
       call add(parts, '')
     endif
     let type = s:find_type(a:line, parts[0])
@@ -279,7 +292,7 @@ function! s:analize(line, cur)
       while new_vstart > 0 && line[new_vstart - 1] !~ '[ \t"]'
         let new_vstart -= 1
       endwhile
-      let new_vparts = split(line[ new_vstart : idx ], '\.')
+      let new_vparts = split(line[ new_vstart : idx ], '\(\.\|->\)')
       let type = s:find_type(a:line, new_vparts[0])
 
       let compmode = s:MODE_NEW_CLASS
@@ -384,7 +397,10 @@ function! cppapi#struct(name, extend, members)
   return cppapi#class(a:name, a:extend, a:members)
 endfunction
 function! cppapi#class(name, extend, members)
-  let s:class[ a:name ] = {
+  let s:class[ a:name ] = s:def_class(a:name, a:extend, a:members)
+endfunction
+function! s:def_class(name, extend, members)
+  return {
     \ 'name'   : a:name,
     \ 'kind'   : 't',
     \ 'extend' : a:extend,
@@ -430,6 +446,35 @@ function! cppapi#getClass(name)
   return get(s:class, a:name)
 endfunction
 
+function! cppapi#getTag(name)
+  let extend = ''
+  let types = filter(taglist('^' . a:name . '$'), 'v:val.kind == "c"')
+  if !empty(types)
+    let type = types[0]
+    if has_key(type, 'inherits')
+      let extend = type.inherits
+    endif
+  endif
+
+  let tags = taglist('^' . a:name . '::')
+  if empty(tags)
+    return {}
+  endif
+
+  let class = s:def_class(a:name, extend, [])
+  for tag in tags
+    let name = substitute(tag.name, '^.*::', '', '')
+    let ttype = split(substitute(substitute(tag.cmd, a:name . '::' . name . '\>.*$', '', ''), name . '\>.*$', '', ''), '\(\^\|\s\+\)')[-1]
+    let ttype = substitute(ttype, '/', '', 'g')
+    if tag.kind == 'f'
+      call add(class.members, cppapi#method(name, tag.signature, ttype))
+    else
+      call add(class.members, cppapi#field(name, ttype))
+    endif
+  endfor
+  return class
+endfunction
+
 " for balloon
 function! cppapi#balloon()
   let res = []
@@ -442,7 +487,7 @@ function! cppapi#balloon()
 endfunction
 
 " load autoload/cppapi/.vim
-"if !exists('s:dictionary_loaded')
+if !exists('s:dictionary_loaded')
   for file in split(globpath(&runtimepath, 'autoload/cppapi/*.vim'), '\n')
 
     " ignore file
@@ -463,7 +508,10 @@ endfunction
   endfor
   echo '[cpp-complete] loaded!'
   let s:dictionary_loaded = 1
-"endif
+endif
+
+
+
 
 
 " generate comp-define from tag
@@ -531,5 +579,19 @@ function! cppapi#gendef(type)
     call setline(line('$')+1, '  \ ])')
     call setline(line('$')+1, '')
   endif
+endfunction
+
+function! cppapi#test()
+  let line = line('.')
+  let cur = col('.') - 1
+  let [ pstart, s:complete_mode, s:type, s:parts ] = s:analize(line, cur)
+  echo s:type
+  echo s:parts
+  echo s:complete_mode
+
+  let tl = taglist(s:type)
+  for t in tl
+    echo t.cmd
+  endfor
 endfunction
 
