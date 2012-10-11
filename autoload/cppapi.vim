@@ -252,7 +252,7 @@ function! s:analize(line, cur)
   " find pstart and vstart
   let vstart = cur
   let pstart = -1
-  while vstart > 0 && line[vstart - 1] !~ '[ \t"]'
+  while vstart > 0 && line[vstart - 1] !~ '[ \t("]'
     if pstart == -1 && ( line[vstart - 1] == '.' || line[vstart - 1] == '>' )
       let pstart = vstart
     endif
@@ -302,28 +302,37 @@ function! s:analize(line, cur)
 endfunction
 
 function! s:find_type(start_line, var)
-  let type = a:var
-  let l = 0
-  while l <= a:start_line
-    let line = getline(l)
-    let line = substitute(line, '<.\{-\}>','','g')
-    let line = substitute(line, '\[.\{-\}\]','','g')
-    if line =~ '\w\+[ \t]\+\<' . a:var . '\>.*'
-      let parts = split(line, '[(),. \t;=]\+')
-      let pre = ''
-      for p in parts
-        if p ==# a:var
-          let type = pre
-          break
-        endif
-        let pre = p
-      endfor
-      if type != ''
-        break
-      endif
+  " find current function start
+  let s = a:start_line
+  while s >= 0
+    let line = join(getline(s, s+8), "\n")
+    if line =~ '([a-zA-Z0-9_,<>/*\n ]*)[\n\s]*{'
+      break
     endif
-    let l += 1
+    let s -= 1
   endwhile
+
+  let type = a:var
+  for rng in [ [s, a:start_line], [0, s-1], [a:start_line+1, line('$')-1] ]
+    let l = rng[0]
+    while l <= rng[1]
+      let line = getline(l)
+      let line = substitute(line, '<.\{-\}>','','g')
+      let line = substitute(line, '\[.\{-\}\]','','g')
+      if line =~ '\w\+[ \t]\+\<' . a:var . '\>.*'
+        let parts = split(line, '[(),. \t;=]\+')
+        let pre = ''
+        for p in parts
+          if p ==# a:var
+            return pre
+          endif
+          let pre = p
+        endfor
+      endif
+      let l += 1
+    endwhile
+  endfor
+
   return type
 endfunction
 
@@ -447,8 +456,21 @@ function! cppapi#getClass(name)
 endfunction
 
 function! cppapi#getTag(name)
+  let cname = a:name
   let extend = ''
-  let types = filter(taglist('^' . a:name . '$'), 'v:val.kind == "c"')
+  let tlist = taglist('^' . cname . '$')
+  let types = filter(tlist, 'v:val.kind == "t"')
+  for t in types
+    if !empty(t)
+      if has_key(t, 'typeref')
+        let ref = substitute(t.typeref, '.\{-\}:', '', '')
+        let cname = ref
+        break
+      endif
+    endif
+  endfor
+
+  let types = filter(tlist, 'v:val.kind == "c"')
   if !empty(types)
     let type = types[0]
     if has_key(type, 'inherits')
@@ -456,7 +478,7 @@ function! cppapi#getTag(name)
     endif
   endif
 
-  let tags = taglist('^' . a:name . '::')
+  let tags = taglist('^' . cname . '::')
   if empty(tags)
     return {}
   endif
@@ -464,7 +486,7 @@ function! cppapi#getTag(name)
   let class = s:def_class(a:name, extend, [])
   for tag in tags
     let name = substitute(tag.name, '^.*::', '', '')
-    let ttype = split(substitute(substitute(tag.cmd, a:name . '::' . name . '\>.*$', '', ''), name . '\>.*$', '', ''), '\(\^\|\s\+\)')[-1]
+    let ttype = split(substitute(substitute(tag.cmd, cname . '::' . name . '\>.*$', '', ''), name . '\>.*$', '', ''), '\(\^\|\s\+\)')[-1]
     let ttype = substitute(ttype, '/', '', 'g')
     if tag.kind == 'f'
       call add(class.members, cppapi#method(name, tag.signature, ttype))
