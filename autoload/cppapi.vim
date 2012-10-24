@@ -105,21 +105,19 @@ function! s:normalize_type(type)
         \ substitute(
         \ substitute(
         \ a:type, 
-        \ '<.*>', '', ''), 
-        \ '\[.*\]', '', ''),
-        \ 'static ', '', '')
+        \ '<.*>', '', 'g'), 
+        \ '\[.*\]', '', 'g'),
+        \ 'static ', '', 'g')
 endfunction
 
 function! s:normalize_retval(type)
   return substitute(
         \ substitute(
         \ substitute(
-        \ substitute(
         \ a:type,
-        \ '<.*>', '', ''),
-        \ '\[.*\]', '', ''),
-        \ 'static ', '', ''),
-        \ 'abstruct ', '', '')
+        \ '<.*>', '', 'g'),
+        \ '\[.*\]', '', 'g'),
+        \ '\(static\|abstruct\|\*\)', '', 'g')
 endfunction
 
 function! s:normalize_prop(prop)
@@ -243,7 +241,9 @@ function! s:analize(line, cur)
   endwhile
   if cur <= 0 || line[idx] =~ '[ \t]'
     let compmode = s:MODE_CLASS
-  elseif line[idx] == '.' || line[idx] == '>'
+  elseif line[idx] == '.'
+    let compmode = s:MODE_MEMBER
+  elseif idx > 0 && line[ idx-1 : idx ] == '->'
     let compmode = s:MODE_MEMBER
   else
     let compmode = s:MODE_CLASS
@@ -252,7 +252,17 @@ function! s:analize(line, cur)
   " find pstart and vstart
   let vstart = cur
   let pstart = -1
-  while vstart > 0 && line[vstart - 1] !~ '[ \t("]'
+  let end_bracket = 0
+  while vstart > 0 && line[vstart - 1] !~ '[ \t"]'
+    if line[vstart - 1] == ')'
+      let end_bracket = end_bracket + 1
+    elseif line[vstart - 1] == '('
+      if end_bracket == 0
+        break
+      else
+        let end_bracket = end_bracket - 1
+      endif
+    endif
     if pstart == -1 && ( line[vstart - 1] == '.' || line[vstart - 1] == '>' )
       let pstart = vstart
     endif
@@ -261,7 +271,7 @@ function! s:analize(line, cur)
   if pstart == -1
     let pstart = vstart
   endif
-  let variable = substitute(line[ vstart : cur ], '(.*)', '(', 'g')
+  let variable = substitute(line[ vstart : cur ], '([^()]*)', '(', 'g')
 
   " separate variable by dot and resolve type.
   let type = ''
@@ -524,7 +534,7 @@ if !exists('s:dictionary_loaded')
       continue
     endif
 
-    exe 'echo "[cpp-complete]load ' . substitute(file, '^.*\','','') . '"'
+    exe 'echo "[cpp-complete]load ' . substitute(file, '^.*[\/]','','') . '"'
     redraw
     exe 'so ' . file
   endfor
