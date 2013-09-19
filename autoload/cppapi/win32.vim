@@ -2114,6 +2114,7 @@ call cppapi#struct('_SECURITY_ATTRIBUTES', '', [
   \ cppapi#field('nLength', 'DWORD'),
   \ ])
 
+call cppapi#struct('STARTUPINFO', 'STARTUPINFOA', [])
 call cppapi#struct('STARTUPINFOA', '_STARTUPINFOA', [])
 call cppapi#struct('LPSTARTUPINFOA', '_STARTUPINFOA', [])
 call cppapi#struct('_STARTUPINFOA', '', [
@@ -2137,6 +2138,7 @@ call cppapi#struct('_STARTUPINFOA', '', [
   \ cppapi#field('wShowWindow', 'WORD'),
   \ ])
 
+call cppapi#struct('STARTUPINFOEX', 'STARTUPINFOEXA', [])
 call cppapi#struct('STARTUPINFOEXA', '_STARTUPINFOEXA', [])
 call cppapi#struct('LPSTARTUPINFOEXA', '_STARTUPINFOEXA', [])
 call cppapi#struct('_STARTUPINFOEXA', '', [
@@ -2325,6 +2327,7 @@ call cppapi#struct('_WIN32_STREAM_ID', '', [
   \ cppapi#field('dwStreamNameSize', 'DWORD'),
   \ ])
 
+call cppapi#struct('ACTCTX', 'ACTCTXA', [])
 call cppapi#struct('ACTCTXA', 'tagACTCTXA', [])
 call cppapi#struct('LPACTCTXA', 'tagACTCTXA', [])
 call cppapi#struct('tagACTCTXA', '', [
@@ -2354,6 +2357,7 @@ call cppapi#struct('tagACTCTXW', '', [
   \ cppapi#field('wProcessorArchitecture', 'USHORT'),
   \ ])
 
+call cppapi#struct('ACTCTX_SECTION_KEYED_DAT', 'ACTCTX_SECTION_KEYED_DATA', [])
 call cppapi#struct('ACTCTX_SECTION_KEYED_DATA', 'tagACTCTX_SECTION_KEYED_DATA', [])
 call cppapi#struct('LPACTCTX_SECTION_KEYED_DATA', 'tagACTCTX_SECTION_KEYED_DATA', [])
 call cppapi#struct('tagACTCTX_SECTION_KEYED_DATA', '', [
@@ -2386,6 +2390,7 @@ call cppapi#struct('tagACTCTX_SECTION_KEYED_DATA_2600', '', [
   \ cppapi#field('ulSectionTotalLength', 'ULONG'),
   \ ])
 
+call cppapi#struct('ACTCTX_SECTION_KEYED_DATA_ASSEMBLY_METADAT', 'ACTCTX_SECTION_KEYED_DATA_ASSEMBLY_METADATA', [])
 call cppapi#struct('ACTCTX_SECTION_KEYED_DATA_ASSEMBLY_METADATA', 'tagACTCTX_SECTION_KEYED_DATA_ASSEMBLY_METADATA', [])
 call cppapi#struct('LPACTCTX_SECTION_KEYED_DATA_ASSEMBLY_METADATA', 'tagACTCTX_SECTION_KEYED_DATA_ASSEMBLY_METADATA', [])
 call cppapi#struct('tagACTCTX_SECTION_KEYED_DATA_ASSEMBLY_METADATA', '', [
@@ -2396,6 +2401,7 @@ call cppapi#struct('tagACTCTX_SECTION_KEYED_DATA_ASSEMBLY_METADATA', '', [
   \ cppapi#field('ulSectionLength', 'ULONG'),
   \ ])
 
+call cppapi#struct('HW_PROFILE_INFO', 'HW_PROFILE_INFOA', [])
 call cppapi#struct('HW_PROFILE_INFOA', 'tagHW_PROFILE_INFOA', [])
 call cppapi#struct('LPHW_PROFILE_INFOA', 'tagHW_PROFILE_INFOA', [])
 call cppapi#struct('tagHW_PROFILE_INFOA', '', [

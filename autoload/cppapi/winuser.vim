@@ -2774,6 +2774,7 @@ call cppapi#struct('tagCBTACTIVATESTRUCT', '', [
   \ cppapi#field('hWndActive', 'HWND'),
   \ ])
 
+call cppapi#struct('CBT_CREATEWND', 'CBT_CREATEWNDA', [])
 call cppapi#struct('CBT_CREATEWNDA', 'tagCBT_CREATEWNDA', [])
 call cppapi#struct('PCBT_CREATEWNDA', 'tagCBT_CREATEWNDA', [])
 call cppapi#struct('tagCBT_CREATEWNDA', '', [
@@ -2835,6 +2836,7 @@ call cppapi#struct('tagCOPYDATASTRUCT', '', [
   \ cppapi#field('PVOID', '(cbData)'),
   \ ])
 
+call cppapi#struct('CREATESTRUCT', 'CREATESTRUCTA', [])
 call cppapi#struct('CREATESTRUCTA', 'tagCREATESTRUCTA', [])
 call cppapi#struct('PCREATESTRUCTA', 'tagCREATESTRUCTA', [])
 call cppapi#struct('tagCREATESTRUCTA', '', [
@@ -3059,6 +3061,7 @@ call cppapi#struct('tagHELPINFO', '', [
   \ cppapi#field('iCtrlId', 'int'),
   \ ])
 
+call cppapi#struct('HELPWININFO', 'HELPWININFOA', [])
 call cppapi#struct('HELPWININFOA', 'tagHELPWININFOA', [])
 call cppapi#struct('PHELPWININFOA', 'tagHELPWININFOA', [])
 call cppapi#struct('tagHELPWININFOA', '', [
@@ -3083,6 +3086,7 @@ call cppapi#struct('tagHELPWININFOW', '', [
   \ cppapi#field('y', 'int'),
   \ ])
 
+call cppapi#struct('HIGHCONTRAST', 'HIGHCONTRASTA', [])
 call cppapi#struct('HIGHCONTRASTA', 'tagHIGHCONTRASTA', [])
 call cppapi#struct('PHIGHCONTRASTA', 'tagHIGHCONTRASTA', [])
 call cppapi#struct('tagHIGHCONTRASTA', '', [
@@ -3099,6 +3103,7 @@ call cppapi#struct('tagHIGHCONTRASTW', '', [
   \ cppapi#field('lpszDefaultScheme', 'LPWSTR'),
   \ ])
 
+call cppapi#struct('ICONMETRICS', 'ICONMETRICSA', [])
 call cppapi#struct('ICONMETRICSA', 'tagICONMETRICSA', [])
 call cppapi#struct('PICONMETRICSA', 'tagICONMETRICSA', [])
 call cppapi#struct('tagICONMETRICSA', '', [
@@ -3155,6 +3160,7 @@ call cppapi#struct('tagLASTINPUTINFO', '', [
   \ cppapi#field('dwTime', 'DWORD'),
   \ ])
 
+call cppapi#struct('MDICREATESTRUCT', 'MDICREATESTRUCTA', [])
 call cppapi#struct('MDICREATESTRUCTA', 'tagMDICREATESTRUCTA', [])
 call cppapi#struct('PMDICREATESTRUCTA', 'tagMDICREATESTRUCTA', [])
 call cppapi#struct('tagMDICREATESTRUCTA', '', [
@@ -3235,6 +3241,7 @@ call cppapi#struct('tagMENUINFO', '', [
   \ cppapi#field('hbrBack', 'HBRUSH'),
   \ ])
 
+call cppapi#struct('MENUITEMINFO', 'MENUITEMINFOA', [])
 call cppapi#struct('MENUITEMINFOA', 'tagMENUITEMINFOA', [])
 call cppapi#struct('PMENUITEMINFOA', 'tagMENUITEMINFOA', [])
 call cppapi#struct('tagMENUITEMINFOA', '', [
@@ -3298,6 +3305,7 @@ call cppapi#struct('tagMONITORINFO', '', [
   \ cppapi#field('rcWork', 'RECT'),
   \ ])
 
+call cppapi#struct('MONITORINFOEX', 'MONITORINFOEXA', [])
 call cppapi#struct('MONITORINFOEXA', 'tagMONITORINFOEXA', [])
 call cppapi#struct('PMONITORINFOEXA', 'tagMONITORINFOEXA', [])
 call cppapi#struct('tagMONITORINFOEXA', '', [
@@ -3366,6 +3374,7 @@ call cppapi#struct('tagMSG', '', [
   \ cppapi#field('wParam', 'WPARAM'),
   \ ])
 
+call cppapi#struct('MSGBOXPARAMS', 'MSGBOXPARAMSA', [])
 call cppapi#struct('MSGBOXPARAMSA', 'tagMSGBOXPARAMSA', [])
 call cppapi#struct('PMSGBOXPARAMSA', 'tagMSGBOXPARAMSA', [])
 call cppapi#struct('tagMSGBOXPARAMSA', '', [
@@ -3406,6 +3415,7 @@ call cppapi#struct('tagMSLLHOOKSTRUCT', '', [
   \ cppapi#field('time', 'DWORD'),
   \ ])
 
+call cppapi#struct('MULTIKEYHELP', 'MULTIKEYHELPA', [])
 call cppapi#struct('MULTIKEYHELPA', 'tagMULTIKEYHELPA', [])
 call cppapi#struct('PMULTIKEYHELPA', 'tagMULTIKEYHELPA', [])
 call cppapi#struct('tagMULTIKEYHELPA', '', [
@@ -3437,6 +3447,7 @@ call cppapi#struct('tagNMHDR', '', [
   \ cppapi#field('idFrom', 'UINT_PTR'),
   \ ])
 
+call cppapi#struct('NONCLIENTMETRICS', 'NONCLIENTMETRICSA', [])
 call cppapi#struct('NONCLIENTMETRICSA', 'tagNONCLIENTMETRICSA', [])
 call cppapi#struct('PNONCLIENTMETRICSA', 'tagNONCLIENTMETRICSA', [])
 call cppapi#struct('tagNONCLIENTMETRICSA', '', [
@@ -3621,6 +3632,7 @@ call cppapi#struct('tagSCROLLINFO', '', [
   \ cppapi#field('nTrackPos', 'int'),
   \ ])
 
+call cppapi#struct('SERIALKEYS', 'SERIALKEYSA', [])
 call cppapi#struct('SERIALKEYSA', 'tagSERIALKEYSA', [])
 call cppapi#struct('PSERIALKEYSA', 'tagSERIALKEYSA', [])
 call cppapi#struct('tagSERIALKEYSA', '', [
@@ -3645,6 +3657,7 @@ call cppapi#struct('tagSERIALKEYSW', '', [
   \ cppapi#field('lpszPort', 'LPWSTR'),
   \ ])
 
+call cppapi#struct('SOUNDSENTRY', 'SOUNDSENTRYA', [])
 call cppapi#struct('SOUNDSENTRYA', 'tagSOUNDSENTRYA', [])
 call cppapi#struct('PSOUNDSENTRYA', 'tagSOUNDSENTRYA', [])
 call cppapi#struct('tagSOUNDSENTRYA', '', [
@@ -3810,6 +3823,7 @@ call cppapi#struct('tagWINDOWPOS', '', [
   \ cppapi#field('y', 'int'),
   \ ])
 
+call cppapi#struct('WNDCLASS', 'WNDCLASSA', [])
 call cppapi#struct('WNDCLASSA', 'tagWNDCLASSA', [])
 call cppapi#struct('PWNDCLASSA', 'tagWNDCLASSA', [])
 call cppapi#struct('tagWNDCLASSA', '', [
@@ -3825,6 +3839,7 @@ call cppapi#struct('tagWNDCLASSA', '', [
   \ cppapi#field('style', 'UINT'),
   \ ])
 
+call cppapi#struct('WNDCLASSEX', 'WNDCLASSEXA', [])
 call cppapi#struct('WNDCLASSEXA', 'tagWNDCLASSEXA', [])
 call cppapi#struct('PWNDCLASSEXA', 'tagWNDCLASSEXA', [])
 call cppapi#struct('tagWNDCLASSEXA', '', [

@@ -1,219 +1,19 @@
-let [ s:TYPE_FUNCTION, s:TYPE_DEFINE, s:TYPE_METHOD, s:TYPE_FIELD ] = range(4)
-let [ s:MODE_FUNCTION, s:MODE_CLASS, s:MODE_MEMBER, s:MODE_VALUE, s:MODE_NEW_CLASS ] = range(5)
+let [ s:TYPE_FUNCTION, s:TYPE_DEFINE, s:TYPE_NAMESPACE, s:TYPE_CLASS, s:TYPE_ENUM , s:TYPE_METHOD, s:TYPE_FIELD, s:MODE_NEW_CLASS, s:TYPE_KEYWORD ] = range(9)
+let [ s:MODE_NAMESPACE, s:MODE_CLASS, s:MODE_MEMBER, s:MODE_ENUM, s:MODE_NEW_CLASS, s:MODE_EQUAL, s:MODE_STATIC ] = range(7)
+let [ s:ROOT_IS_CLASS, s:ROOT_IS_VAR ] = range(2)
 
-if !exists('g:cppapi_complete_item_len')
-  let g:cppapi_complete_item_len = 30
-endif
-if !exists('g:cppapi_pre_omnifunc')
-  let g:cppapi_pre_omnifunc = ''
-endif
-if !exists('g:cppapi_ignore_files')
-  let g:cppapi_ignore_files = []
-endif
-
+let g:cpp_complete_item_len = 30
 let s:complete_mode = s:MODE_CLASS
 let s:type = ''
 let s:parts = []
+let s:last_list = []
 
-function! cppapi#t()
-  echo s:type
-  echo s:parts
-  echo s:complete_mode
-endfunction
-
-function! cppapi#complete(findstart, base)
-  let ret = []
-  try
-    if exists('g:cppapi_pre_omnifunc') && g:cppapi_pre_omnifunc != ''
-      exe 'let ret = ' . g:cppapi_pre_omnifunc . '(a:findstart, a:base)'
-    endif
-  catch /.*/
-  endtry
-
-  if a:findstart
-    let line = line('.')
-    let cur = col('.') - 1
-    let [ pstart, s:complete_mode, s:type, s:parts ] = s:analize(line, cur)
-    return pstart
-  else
-    if s:complete_mode == s:MODE_NEW_CLASS
-      call s:class_new_completion(s:type, res)
-
-    elseif s:complete_mode == s:MODE_VALUE
-      call cppapi#define_completion(a:base, ret)
-
-    elseif s:complete_mode == s:MODE_MEMBER
-      call s:class_member_completion(a:base, ret)
-
-    else
-      call cppapi#class_completion(a:base, ret)
-      call cppapi#function_completion(a:base, ret)
-      call cppapi#define_completion(a:base, ret)
-    endif
-  endif
-  return ret
-endfunction
-
-" complete func
-
-function! cppapi#class_completion(base, res)
-  for key in keys(s:class)
-    if key =~ '^' . a:base
-      let item = s:class[ key ]
-      call add(a:res, s:class_to_compitem(item))
-    endif
-  endfor
-endfunction
-
-function! cppapi#function_completion(base, res)
-  for fun in s:function
-    if fun.name =~ '^' . a:base
-      call add(a:res, s:func_to_compitem(fun))
-    endif
-  endfor
-endfunction
-
-function! cppapi#define_completion(base, res)
-  for def in s:define
-    if def.name =~ '^' . a:base
-      call add(a:res, s:def_to_compitem(def))
-    endif
-  endfor
-endfunction
-
-function! s:class_new_completion(base, res)
-  for key in keys(s:class)
-    if key == a:base
-      let item = cppapi#getClass(key)
-      for member in item.members
-        " negrect not constructor
-        if member.name !~ '^' . item.name . '('
-          continue
-        endif
-
-        if member.name =~ '^' . a:base
-          call add(a:res, cppapi#member_to_compitem(item.name, member))
-        endif
-      endfor
-      break
-    endif
-  endfor
-endfunction
-
-function! s:normalize_type(type)
-  return substitute(
-        \ substitute(
-        \ substitute(
-        \ a:type, 
-        \ '<.*>', '', 'g'), 
-        \ '\[.*\]', '', 'g'),
-        \ 'static ', '', 'g')
-endfunction
-
-function! s:normalize_retval(type)
-  return substitute(
-        \ substitute(
-        \ substitute(
-        \ a:type,
-        \ '<.*>', '', 'g'),
-        \ '\[.*\]', '', 'g'),
-        \ '\(static\|abstruct\|\*\)', '', 'g')
-endfunction
-
-function! s:normalize_prop(prop)
-  return substitute(
-        \ substitute(
-        \ a:prop,
-        \ '<.\{-\}>','','g'),
-        \ '\[.\{-\}\]','','g')
-endfunction
-
-function! s:class_member_completion(base, res)
-  let len = len(s:parts)
-  let idx = 0
-  let class = s:normalize_type(s:type)
-  for part in s:parts
-    if idx == 0
-      let idx = 1
-      continue
-    endif
-    if !cppapi#isClassExist(class)
-      let item = cppapi#getTag(class)
-      if empty(item)
-        if exists('item')
-          unlet item
-        endif
-        break
-      endif
-    else
-      let item = cppapi#getClass(class)
-    endif
-
-    if idx == len - 1
-      break
-    endif
-
-    " find target in member list
-    let _break = 0
-    while 1
-      for member in item.members
-        if member.name ==# part
-          let _break = 1
-          let class = s:normalize_retval(member.class)
-          break
-        endif
-      endfor
-      if _break == 1
-        break
-      endif
-      if has_key(item, 'extend') && item.extend != ''
-        if cppapi#isClassExist(item.extend)
-          let item = cppapi#getClass(item.extend)
-        else
-          let item = cppapi#getTag(item.extend)
-          if empty(item)
-            unlet item
-          endif
-        endif
-      else
-        return
-      endif
-    endwhile
-
-    let idx += 1
-  endfor
-
-  if exists('item')
-    call s:attr_completion(item.name, a:base, a:res)
-  endif
-endfunction
-
-function! s:attr_completion(tag, base, res)
-  if !cppapi#isClassExist(a:tag)
-    let item = cppapi#getTag(a:tag)
-    if empty(item)
-      return
-    endif
-  else
-    let item = cppapi#getClass(a:tag)
-  endif
-
-  for member in item.members
-    " negrect get_ and set_
-    if member.name =~ '^\(get_\|set_\)'
-      continue
-    endif
-
-   if member.name =~ '^' . a:base
-      call add(a:res, cppapi#member_to_compitem(item.name, member))
-    endif
-  endfor
-
-  " find super class member
-  if item.extend != '' && item.extend != '-'
-    call s:attr_completion(item.extend, a:base, a:res)
-  endif
-endfunction
+let g:cpp_access_modifier = [
+  \ 'public',
+  \ 'private',
+  \ 'protected',
+  \ 'static',
+  \ ]
 
 function! s:analize(line, cur)
   " find start of word
@@ -230,8 +30,8 @@ function! s:analize(line, cur)
   "
   "  parts = [ variable, property1, property2, property3 ]
   "
+  let line = getline(a:line)
   let cur = a:cur
-  let line = getline(a:line)[ 0 : cur-1 ]
   let compmode = s:MODE_CLASS
 
   " resolve complete mode [CLASS/MEMBER]
@@ -274,13 +74,16 @@ function! s:analize(line, cur)
   let variable = substitute(line[ vstart : cur ], '([^()]*)', '(', 'g')
 
   " separate variable by dot and resolve type.
-  let type = ''
-  let parts = split(s:normalize_prop(variable), '\(\.\|->\)')
-  if !empty(parts) && parts[0] != '='
-    if line[cur-1] == '.' || line[cur-1] == '>'
+  let type = { 'class' : '' }
+  let parts = split(s:normalize_prop(variable), '\.')
+  if !empty(parts)
+    if line[cur-1] == '.'
       call add(parts, '')
     endif
     let type = s:find_type(a:line, parts[0])
+    if type.mode == s:ROOT_IS_CLASS
+      let compmode = s:MODE_STATIC
+    endif
   else
     " value complete
     let idx = cur - 1
@@ -289,7 +92,26 @@ function! s:analize(line, cur)
     endwhile
 
     if line[idx] == '='
-      let compmode = s:MODE_VALUE
+      let compmode = s:MODE_EQUAL
+
+      " resolve property type of forward 'equal'
+      let idx -= 1
+      while idx >= 0 && line[idx] =~ '[ \t+]'
+        let idx -= 1
+      endwhile
+      let vend = idx
+      let idx -= 1
+      while idx >= 0 && line[idx] !~ '[ \t+]'
+        let idx -= 1
+      endwhile
+      let vstart = idx+1
+
+      let variable = line[ vstart : vend ]
+      let parts = split(s:normalize_prop(variable), '\.')
+      let type = s:find_type(a:line, parts[0])
+      let pstart = col('.')+1
+      call add(parts, '')
+
     elseif idx >= 3 && line[ idx-3 : ] =~ '\<new\>'
       " find target variable
       let idx -= 3
@@ -302,39 +124,307 @@ function! s:analize(line, cur)
       while new_vstart > 0 && line[new_vstart - 1] !~ '[ \t"]'
         let new_vstart -= 1
       endwhile
-      let new_vparts = split(line[ new_vstart : idx ], '\(\.\|->\)')
+      let new_vparts = split(s:normalize_prop(line[ new_vstart : idx ]), '\(\.\|->\)')
       let type = s:find_type(a:line, new_vparts[0])
 
       let compmode = s:MODE_NEW_CLASS
     endif
   endif
-  return [ pstart, compmode, type, parts ]
+  return [ pstart, compmode, type.class, parts ]
+endfunction
+
+function! cppapi#complete(findstart, base)
+  if a:findstart
+    let line = line('.')
+    let cur = col('.') - 1
+    let [ pstart, s:complete_mode, s:type, s:parts ] = s:analize(line, cur)
+    return pstart
+
+  else
+    let res = []
+    if s:complete_mode == s:MODE_NAMESPACE
+      call s:ns_completion(a:base, res)
+
+    elseif s:complete_mode == s:MODE_CLASS
+      call s:keyword_completion(a:base, res)
+      "call s:this_member_completion(a:base, res)
+      call s:class_completion(a:base, res)
+      call s:function_completion(a:base, res)
+      "call s:define_completion(a:base, res)
+
+    elseif s:complete_mode == s:MODE_NEW_CLASS
+      call s:class_new_completion(s:type, res)
+
+    elseif s:complete_mode == s:MODE_EQUAL
+      call s:class_member_completion(a:base, res, 1)
+
+    elseif s:complete_mode == s:MODE_STATIC
+      call s:class_member_completion(a:base, res, 2)
+
+    elseif s:complete_mode == s:MODE_MEMBER
+      call s:class_member_completion(a:base, res, 0)
+
+    else
+      if len(s:parts) >= 1 
+
+        " is namespace complete ?
+        let match_ns = 0
+        let variable = join(s:parts, '.')
+        if variable[-1:-1] == '.'
+          let variable = variable[0:-2]
+          let type = variable
+        else
+          let type = substitute(variable, '\.[^.]\+$', '', '')
+        endif
+        let start = len(join(s:parts[0:-2], '.'))+1
+        for ns in cppapi#getNamespaces()
+          if ns =~ '^' . variable
+            let compitem = ns[start : ]
+            call add(res, s:ns_to_compitem(compitem))
+          endif
+          if ns == type
+            let match_ns = 1
+          endif
+        endfor
+
+        if match_ns == 1 || s:parts[0] == 'cpp'
+          let s:type = substitute(type, '.*\.', '', '')
+        elseif cppapi#isEnumExist(s:parts[0])
+          let s:type = s:parts[0]
+        endif
+      endif
+      call s:class_member_completion(a:base, res, 0)
+      call s:function_completion(a:base, res)
+      call s:define_completion(a:base, res)
+    endif
+    let s:last_list = res
+    return res
+
+  endif
+endfunction
+
+function! s:keyword_completion(base, res)
+  for fun in s:keyword
+    if fun.name =~ '^' . a:base
+      call add(a:res, s:keyword_to_compitem(fun))
+    endif
+  endfor
+endfunction
+
+function! s:ns_completion(base, res)
+  for ns in s:namespace
+    if ns =~ '^' . a:base
+      call add(a:res, s:ns_to_compitem(ns))
+    endif
+  endfor
+endfunction
+
+function! s:this_member_completion(base, res)
+    let type = s:type
+    let parts = s:parts
+    let s:type = 'this'
+    let s:parts = [ 'this', '' ]
+    call s:class_member_completion(a:base, a:res, 0)
+    let s:type = type
+    let s:parts = parts
+endfunction
+
+function! s:function_completion(base, res)
+  for fun in s:function
+    if fun.name =~ '^' . a:base
+      call add(a:res, s:func_to_compitem(fun))
+    endif
+  endfor
+endfunction
+
+function! s:define_completion(base, res)
+  for def in s:define
+    if def.name =~ '^' . a:base
+      call add(a:res, s:def_to_compitem(def))
+    endif
+  endfor
+endfunction
+
+function! s:class_completion(base, res)
+  for key in keys(s:class)
+    if key =~ '^' . a:base
+      let item = s:class[ key ]
+      call add(a:res, s:class_to_compitem(item))
+    endif
+  endfor
+endfunction
+
+function! s:enum_member_completion(tag, base, res)
+  if !cppapi#isEnumExist(a:tag)
+    return
+  endif
+
+  let item = cppapi#getEnum(a:tag)
+  for member in item.members
+   if member.name =~ '^' . a:base
+      call add(a:res, cppapi#member_to_compitem(item.name, member))
+    endif
+  endfor
+endfunction
+
+function! s:class_member_completion(base, res, type)
+  let len = len(s:parts)
+  let idx = 0
+  let parts = s:parts
+  let type  = s:type
+
+  " this or super class member ?
+  if parts[0] == 'this' || parts[0] == 'super'
+    let [ type, super ] = s:this_class(line('.'))
+    if parts[0] == 'super'
+      let type = super
+    else
+      if !cppapi#isClassExist(type)
+        let type = super
+      endif
+    endif
+  endif
+
+
+  " cpp class member ?
+  let class = s:conv_primitive(s:normalize_type(type))
+  for part in parts
+    if idx == 0
+      let idx = 1
+      continue
+    endif
+    if !cppapi#isClassExist(class)
+      if !cppapi#isEnumExist(class)
+"       let item = cppapi#getTag(class)
+"       if empty(item)
+"         if exists('item')
+"           unlet item
+"         endif
+"         break
+"       endif
+echoerr '!!!!!!!!!!!!!!!!!!!!!!!'
+        return
+      else
+        let item = cppapi#getEnum(class)
+      endif
+    else
+      let item = cppapi#getClass(class)
+    endif
+
+    if idx == len - 1
+      break
+    endif
+
+    " find target in member list
+    let _break = 0
+    while 1
+      for member in item.members
+        if member.name ==# part
+          let _break = 1
+          let class = s:normalize_retval(member.class)
+          let class = s:conv_primitive(class)
+          break
+        endif
+      endfor
+      if _break == 1
+        break
+      endif
+      if has_key(item, 'extend')
+        if cppapi#isClassExist(item.extend)
+          let item = cppapi#getClass(item.extend)
+        else
+"         let item = cppapi#getTag(item.extend)
+"         if empty(item)
+"           unlet item
+            break
+"         endif
+        endif
+      else
+        return
+      endif
+    endwhile
+
+    let idx += 1
+  endfor
+
+  if exists('item')
+    if a:type == 0
+      call s:attr_completion(item.name, a:base, a:res, 0)
+      call s:enum_member_completion(item.name, a:base, a:res)
+    elseif a:type == 1
+      call s:enum_member_completion(item.name, a:base, a:res)
+      if !has_key(s:primitive_dict, item.name)
+        let newitem = cppapi#member_to_compitem('new ' . item.name . '(', {})
+        let newitem.menu = 'create new instance'
+        call add(a:res, newitem)
+        let newitem = cppapi#member_to_compitem('(' . item.name . ')', {})
+        let newitem.menu = 'for cast'
+        call add(a:res, newitem)
+      endif
+      if empty(a:res)
+        call s:class_completion(a:base, a:res)
+      endif
+    else
+      call s:attr_completion(item.name, a:base, a:res, 1)
+    endif
+  endif
+endfunction
+
+function! s:normalize_type(type)
+  return substitute(
+        \ substitute(
+        \ substitute(
+        \ a:type, 
+        \ '<.*>', '', ''), 
+        \ '\[.*\]', '', ''),
+        \ 'static ', '', '')
+endfunction
+
+function! s:normalize_retval(type)
+  return substitute(
+        \ substitute(
+        \ substitute(
+        \ substitute(
+        \ a:type,
+        \ '<.*>', '', ''),
+        \ '\[.*\]', '', ''),
+        \ 'static ', '', ''),
+        \ 'abstruct ', '', '')
+endfunction
+
+function! s:normalize_prop(prop)
+  return substitute(
+        \ substitute(
+        \ a:prop,
+        \ '<.\{-\}>','','g'),
+        \ '\[.\{-\}\]','','g')
 endfunction
 
 function! s:find_type(start_line, var)
+  let result = { 'class' :  a:var , 'mode' : s:ROOT_IS_VAR}
+
   " find current function start
   let s = a:start_line
   while s >= 0
-    let line = join(getline(s, s+8), "\n")
-    if line =~ '([a-zA-Z0-9_,<>/*\n ]*)[\n\s]*{'
+    let line = getline(s)
+    if line =~ '^\s\+[a-zA-Z0-9_.<>]\+\s\+[a-zA-Z0-9_.<> ]\+('
       break
     endif
     let s -= 1
   endwhile
 
-  let type = a:var
   for rng in [ [s, a:start_line], [0, s-1], [a:start_line+1, line('$')-1] ]
     let l = rng[0]
     while l <= rng[1]
-      let line = getline(l)
-      let line = substitute(line, '<.\{-\}>','','g')
-      let line = substitute(line, '\[.\{-\}\]','','g')
-      if line =~ '\w\+[ \t]\+\<' . a:var . '\>.*'
-        let parts = split(line, '[(),. \t;=]\+')
+      let line = s:normalize_prop(getline(l))
+      if line =~ '[a-zA-Z0-9_]\+\s\+\<' . a:var . '\>.*'
+        let parts = split(line, '[(). \t;=]\+')
         let pre = ''
         for p in parts
-          if p ==# a:var
-            return pre
+          if p ==# a:var && index(g:cpp_access_modifier, pre) < 0
+            let result.class = s:conv_primitive(pre)
+            let result.mode = s:ROOT_IS_VAR
+            return result
           endif
           let pre = p
         endfor
@@ -343,23 +433,142 @@ function! s:find_type(start_line, var)
     endwhile
   endfor
 
-  return type
+  if cppapi#isClassExist(result.class)
+    let result.mode = s:ROOT_IS_CLASS
+  endif
+
+  return result
 endfunction
 
-" complete item's func
+function! s:this_class(start_line)
+  let _class = ''
+  let _super = ''
+  let finded_class = 0
+  let s = a:start_line
+  while s >= 0
+    let line = getline(s)
+    if line =~ '.*\<class\s\+' && line !~ "^\s*\/\/"
+      let finded_class = 1
+      let _class = substitute(substitute(line, '.*\<class\s\+', '', ''), '\s\+.*$', '', '')
+    endif
+    if finded_class == 1
+      if line =~ '.*\s\+extends\s\+' && line !~ "^\s*\/\/"
+        let _super = substitute(substitute(line, '.*\<extends\s\+', '', ''), '\s\+.*$', '', '')
+      endif
+      if line =~ '{'
+        break
+      endif
+    endif
+    let s -= 1
+  endwhile
+  return [ _class , _super]
+endfunction
+
+let s:primitive_dict = {
+  \ 'byte '  : 'Byte',
+  \ 'short'  : 'Short',
+  \ 'int'    : 'Integer',
+  \ 'long'   : 'Long',
+  \ 'float'  : 'Single',
+  \ 'double' : 'Double',
+  \ 'char'   : 'Char',
+  \ 'string' : 'String',
+  \ 'bool'   : 'Bool',
+  \ }
+function! s:conv_primitive(str)
+  if has_key(s:primitive_dict, a:str)
+    return s:primitive_dict[a:str]
+  else
+    return a:str
+  endif
+endfunction
+
+function! s:attr_completion(tag, base, res, static)
+  if !cppapi#isClassExist(a:tag)
+    return
+  endif
+
+  let item = cppapi#getClass(a:tag)
+  for member in item.members
+    if a:static == 1 && has_key(member, 'static') && member.static == 0
+      continue
+    endif
+
+    if member.name =~ '^' . a:base
+      call add(a:res, cppapi#member_to_compitem(item.name, member))
+    endif
+  endfor
+
+  " find super class member
+  if item.extend != '' && item.extend != '-'
+    call s:attr_completion(item.extend, a:base, a:res, a:static)
+  endif
+endfunction
 
 function! s:abbr(str)
-  if len(a:str) > g:cppapi_complete_item_len
-    return a:str[0 : g:cppapi_complete_item_len] . '...'
+  if len(a:str) > g:cpp_complete_item_len
+    return a:str[0 : g:cpp_complete_item_len] . '...'
   endif
   return a:str
 endfunction
 
+let s:function = []
+function! cppapi#function(name, signature, retval, file)
+  call add(s:function, 
+    \ {
+    \ 'type'      : s:TYPE_FUNCTION,
+    \ 'kind'      : 'f',
+    \ 'name'      : a:name,
+    \ 'file'      : a:file,
+    \ 'retval'    : a:retval,
+    \ 'signature' : a:signature
+    \ })
+endfunction
+
+function! cppapi#member_to_compitem(class, member)
+  if empty(a:member)
+    return {
+      \ 'word' : a:class,
+      \ 'abbr' : s:abbr(a:class),
+      \ 'menu' : a:class,
+      \ 'kind' : 't',
+      \ 'dup'  : 1,
+      \}
+  else
+    let modfier = ''
+    if a:member.static == 1
+      let modfier .= '<static> '
+    endif
+    if a:member.public == 1
+      let modfier .= '<public> '
+    endif
+    return {
+      \ 'word' : a:member.name,
+      \ 'abbr' : s:abbr(a:member.name),
+      \ 'menu' : '[' . a:class . '] ' . modfier . a:member.class . ' ' . a:member.name . a:member.detail,
+      \ 'kind' : a:member.kind,
+      \ 'dup'  : 1,
+      \}
+  endif
+endfunction
+
+function! s:ns_to_compitem(ns)
+  return {
+    \ 'word' : a:ns,
+    \ 'menu' : 'namespace',
+    \ 'kind' : 't',
+    \}
+endfunction
+
 function! s:class_to_compitem(member)
+  let extends = ''
+  if a:member.extend != ''
+    let extends = ' extends ' . a:member.extend
+  endif
   return {
     \ 'word' : a:member.name,
     \ 'abbr' : s:abbr(a:member.name),
-    \ 'menu' : ':' . a:member.extend,
+    \ 'menu' : '[class]' . extends,
     \ 'kind' : a:member.kind,
     \}
 endfunction
@@ -387,39 +596,84 @@ function! s:def_to_compitem(def)
     \}
 endfunction
 
-let s:function = []
-function! cppapi#function(name, signature, retval, file)
-  call add(s:function, 
-    \ {
-    \ 'type'      : s:TYPE_FUNCTION,
-    \ 'kind'      : 'f',
-    \ 'name'      : a:name,
-    \ 'file'      : a:file,
-    \ 'retval'    : a:retval,
-    \ 'signature' : a:signature
-    \ })
-endfunction
-
-function! cppapi#member_to_compitem(class, member)
+function! s:keyword_to_compitem(func)
   return {
-    \ 'word' : a:member.name,
-    \ 'abbr' : s:abbr(a:member.name),
-    \ 'menu' : '[' . a:class . '] ' . a:member.class . ' ' . a:member.name . a:member.detail,
-    \ 'kind' : a:member.kind,
+    \ 'word' : a:func.name, 
+    \ 'menu' : a:func.detail,
+    \ 'kind' : 't',
     \}
 endfunction
 
-" for define
-
 let s:class = {}
+
 function! cppapi#struct(name, extend, members)
   return cppapi#class(a:name, a:extend, a:members)
 endfunction
+
 function! cppapi#class(name, extend, members)
-  let s:class[ a:name ] = s:def_class(a:name, a:extend, a:members)
+  let s:class[ a:name ] = {
+    \ 'name'   : a:name,
+    \ 'kind'   : 't',
+    \ 'extend' : a:extend,
+    \ 'members': a:members,
+    \ }
+  if exists('s:parent') && index(s:parent.members, a:name) == -1
+    call add(s:parent.members, cppapi#field_internal(0, 1, a:name, a:name))
+  endif
 endfunction
+
+function! cppapi#interface(name, extend, members)
+  call cppapi#class(a:name, a:extend, a:members)
+endfunction
+
+function! cppapi#namespace(name, detail)
+  return {
+    \ 'type'   : s:TYPE_METHOD,
+    \ 'kind'   : 'f', 
+    \ 'name'   : a:name,
+    \ 'class'  : a:name,
+    \ 'static' : 0,
+    \ 'detail' : a:detail,
+    \ }
+endfunction
+
+let s:namespace = []
+function! cppapi#namespace(ns)
+  try
+    unret s:parent
+  catch /.*/
+  endtry
+
+  call add(s:namespace, a:ns)
+
+  let parts = split(a:ns, '\.')
+  for part in parts
+    "if exists('s:parent') && index(s:parent.members, part) == -1
+    "  call add(s:parent.members, cppapi#field(part, ''))
+    "endif
+
+    if !cppapi#isClassExist(part)
+      call s:namespace_item(part, '', [])
+    endif
+
+    " last namespace (for cppapi#class)
+    let s:parent = cppapi#getClass(part)
+  endfor
+endfunction
+
+let s:keyword = []
+function! cppapi#keyword(name, detail)
+  call add(s:keyword, 
+    \ {
+    \ 'type'      : s:TYPE_KEYWORD,
+    \ 'name'      : a:name,
+    \ 'detail'    : a:detail
+    \ })
+endfunction
+
 function! s:def_class(name, extend, members)
   return {
+    \ 'type'   : s:TYPE_CLASS,
     \ 'name'   : a:name,
     \ 'kind'   : 't',
     \ 'extend' : a:extend,
@@ -427,22 +681,18 @@ function! s:def_class(name, extend, members)
     \ }
 endfunction
 
-function! cppapi#field(name, class)
-  return {
-    \ 'type'   : s:TYPE_FIELD,
-    \ 'kind'   : 'v', 
-    \ 'name'   : a:name,
-    \ 'class'  : a:class,
-    \ 'detail' : '',
-    \ }
+function! cppapi#method(name, detail, class)
+  return cppapi#method_internal(0, 1, a:name, a:detail, a:class)
 endfunction
 
-function! cppapi#method(name, detail, class)
+function! cppapi#method_internal(static, public, name, detail, class)
   return {
     \ 'type'   : s:TYPE_METHOD,
     \ 'kind'   : 'f', 
     \ 'name'   : a:name,
     \ 'class'  : a:class,
+    \ 'static' : a:static,
+    \ 'public' : a:public,
     \ 'detail' : a:detail,
     \ }
 endfunction
@@ -457,6 +707,51 @@ function! cppapi#define(def)
     \ })
 endfunction
 
+function! cppapi#field(name, class)
+  return cppapi#field_internal(0, 1, a:name, a:class)
+endfunction
+
+function! cppapi#field_internal(static, public, name, class)
+  return {
+    \ 'type'   : s:TYPE_FIELD,
+    \ 'kind'   : 'v', 
+    \ 'name'   : a:name,
+    \ 'class'  : a:class,
+    \ 'static' : a:static,
+    \ 'public' : a:public,
+    \ 'detail' : '',
+    \ }
+endfunction
+
+let s:enum = {}
+function! cppapi#enum(name, members)
+  let s:enum[ a:name ] = {
+    \ 'type'   : s:TYPE_ENUM,
+    \ 'name'   : a:name,
+    \ 'kind'   : 't',
+    \ 'members': a:members,
+    \ 'detail' : '',
+    \ }
+endfunction
+
+function! cppapi#isMethod(member)
+  if a:member.type == s:TYPE_METHOD
+    return 1
+  else
+    return 0
+  endif
+endfunction
+
+function! s:namespace_item(name, extend, members)
+  let s:class[ a:name ] = {
+    \ 'type'   : s:TYPE_NAMESPACE,
+    \ 'name'   : a:name,
+    \ 'kind'   : 't',
+    \ 'extend' : a:extend,
+    \ 'members': a:members,
+    \ }
+endfunction
+
 function! cppapi#isClassExist(name)
   return has_key(s:class, a:name)
 endfunction
@@ -465,165 +760,333 @@ function! cppapi#getClass(name)
   return get(s:class, a:name)
 endfunction
 
-function! cppapi#getTag(name)
-  let cname = a:name
-  let extend = ''
-  let tlist = taglist('^' . cname . '$')
-  let types = filter(tlist, 'v:val.kind == "t"')
-  for t in types
-    if !empty(t)
-      if has_key(t, 'typeref')
-        let ref = substitute(t.typeref, '.\{-\}:', '', '')
-        let cname = ref
-        break
-      endif
-    endif
-  endfor
-
-  let types = filter(tlist, 'v:val.kind == "c"')
-  if !empty(types)
-    let type = types[0]
-    if has_key(type, 'inherits')
-      let extend = type.inherits
-    endif
+function! cppapi#getSuperClassList(name, list)
+  if !cppapi#isClassExist(a:name)
+    return
   endif
 
-  let tags = taglist('^' . cname . '::')
-  if empty(tags)
-    return {}
+  let item = cppapi#getClass(a:name)
+  if item.extend != '' && item.extend != '-'
+    call add(a:list, item.extend)
+    call cppapi#getSuperClassList(item.extend, a:list)
   endif
-
-  let class = s:def_class(a:name, extend, [])
-  for tag in tags
-    let name = substitute(tag.name, '^.*::', '', '')
-    let ttype = split(substitute(substitute(tag.cmd, cname . '::' . name . '\>.*$', '', ''), name . '\>.*$', '', ''), '\(\^\|\s\+\)')[-1]
-    let ttype = substitute(ttype, '/', '', 'g')
-    if tag.kind == 'f'
-      call add(class.members, cppapi#method(name, tag.signature, ttype))
-    else
-      call add(class.members, cppapi#field(name, ttype))
-    endif
-  endfor
-  return class
 endfunction
 
-" for balloon
+function! cppapi#isEnumExist(name)
+  return has_key(s:enum, a:name)
+endfunction
+
+function! cppapi#getEnum(name)
+  return get(s:enum, a:name)
+endfunction
+
+function! cppapi#getNamespaces()
+  return s:namespace
+endfunction
+
+function! s:class_new_completion(base, res)
+  for key in keys(s:class)
+    if key == a:base
+      let item = cppapi#getClass(key)
+      for member in item.members
+        " negrect not constructor
+        if member.name !~ '^' . item.name . '('
+          continue
+        endif
+
+        if member.name =~ '^' . a:base
+          call add(a:res, cppapi#member_to_compitem(item.name, member))
+        endif
+      endfor
+      break
+    endif
+  endfor
+endfunction
+
+function! cppapi#showRef()
+  if !exists('g:cppapi#statusline')
+    let g:cppapi#statusline = &statusline
+  endif
+
+  let items = s:ref('', line('.'), col('.'))
+  if len(items) == 0
+    return ""
+  endif
+
+  let b:ref = {
+  \ 'index' : -1,
+  \ 'items' : items,
+  \ 'line'  : line('.'),
+  \ }
+  call cppapi#nextRef()
+
+  augroup cppapi
+    au!
+    au InsertLeave  <buffer> call cppapi#clearRef()
+    au CursorMovedI <buffer> call cppapi#checkLineForRef()
+  augroup END
+  return ""
+endfunction
+
+function! s:toStatusLineString(str)
+  return substitute(
+        \ substitute(
+        \ substitute(
+        \ substitute(
+        \ a:str, 
+        \ '[', '%#Title#[', ''), 
+        \ ']', ']%#Function#', ''), 
+        \ '(', '%#Normal#(', ''),
+        \ '//','%#Comment#//', '')
+endfunction
+
+function! cppapi#nextRef()
+  return s:prevNextRef(1)
+endfunction
+function! cppapi#prevRef()
+  return s:prevNextRef(-1)
+endfunction
+function! s:prevNextRef(adjust)
+  if exists("b:ref")
+    let b:ref.index += a:adjust
+    if b:ref.index >= len(b:ref.items)
+      let b:ref.index = 0
+    elseif b:ref.index < 0
+      let b:ref.index = len(b:ref.items) - 1
+    endif
+    let idx = b:ref.index + 1
+    let def = s:toStatusLineString(b:ref.items[ b:ref.index ])
+    if def != ''
+      let &l:statusline = '(' . idx . '/' . len(b:ref.items) . ') %#Function#' . def
+    endif
+  endif
+  return ""
+endfunction
+
+function! cppapi#checkLineForRef()
+  if exists("b:ref")
+    if b:ref.line != line('.')
+      call cppapi#clearRef()
+    endif
+  endif
+endfunction
+
+function! cppapi#clearRef()
+  let &l:statusline = g:cppapi#statusline
+  augroup cppapi
+    au!
+  augroup END
+endfunction
+
 function! cppapi#balloon()
-  let res = []
-  call cppapi#function_completion(v:beval_text, res)
-  let menus = []
-  for member in res
-    call add(menus, member.menu)
-  endfor
-  return join(menus, "\n")
+  return join(s:ref(v:beval_text, v:beval_lnum, v:beval_col), "\n")
 endfunction
 
-" load autoload/cppapi/.vim
-if !exists('s:dictionary_loaded')
-  for file in split(globpath(&runtimepath, 'autoload/cppapi/*.vim'), '\n')
+function! s:ref(word, lnum, col)
+  let line = getline('.')
+  let cc = strridx(line, '(', a:col)
+  if cc == -1
+    let cc = a:col
+  else
+    let cc -= 1
+  endif
 
-    " ignore file
-    let ignore = 0
-    for ignore_file in g:cppapi_ignore_files
-      if match(file, ignore_file) != -1
-        let ignore = 1
-        break
+  let [ pstart, complete_mode, s:type, s:parts ] = s:analize(a:lnum, cc)
+  let menus = []
+  let l = line[ pstart : cc]
+  for member in s:last_list
+   if member.word =~ '^' . l
+      call add(menus, member.menu)
+    endif
+  endfor
+  return menus
+endfunction
+
+function! s:msg(msg)
+  redraw
+  let msg = strpart( a:msg, 0, winwidth(0) - &numberwidth - 10)
+  echo 'cppapi: ' . msg
+endfunction
+
+function! s:class_name(path)
+  let items = split(substitute(a:path, ";", "", ""), '[.$]')
+  if len(items) > 0
+    return items[-1]
+  else
+    return a:path
+  endif
+endfunction
+
+function! s:normalize_class(path)
+  return substitute(substitute(a:path, "[a-zA-Z0-9_.]*[.$]", "", "g"), ";", "", "")
+endfunction
+
+" load from tags
+function! cppapi#loadFromTags()
+  call s:msg("tag load start ... ")
+
+  let idx = char2nr('a')
+  let end = char2nr('z')
+  let defs = {}
+  while idx <= end
+    let ptn = nr2char(idx)
+    let idx += 1
+
+    call s:msg('tag load [' . ptn . ']. Please wait ... ')
+    let tlist = taglist('^' . ptn . '.*')
+
+    " classes
+    for titem in tlist
+      if titem.kind == 'c'
+        let class = titem
+        let cname = substitute(class.name, '.*\.', '', '')
+        let extend = ''
+        if has_key(class, 'inherits')
+          let extend = class.inherits
+        endif
+
+        if has_key(defs, cname)
+          let defs[cname].extend = extend
+        else
+          let defs[cname] = s:def_class(cname, extend, [])
+        endif
+
+      elseif has_key(titem, "class") && ((titem.kind == "f" || titem.kind == "m" || titem.kind == "p"))
+        " members
+        let member = titem
+        let cname = substitute(member.class, '.*\.', '', '')
+        let mname = substitute(member.name, '.*\.', '', '')
+        if mname =~ '^\~'
+          continue
+        endif
+        if !has_key(defs, cname)
+          let defs[cname] = s:def_class(cname, '', [])
+        endif
+
+        if !has_key(defs[cname], 'member_names')
+          let defs[cname].member_names = []
+        endif
+        if index(defs[cname].member_names, mname) == -1
+          try
+            let ttype = split(substitute(member.cmd, '\s*\<' . mname . '\>.*$', '', ''), '\s\+')[-1]
+          catch /.*/
+            let ttype = mname
+          endtry
+
+          if index(g:cpp_access_modifier, ttype) >= 0
+            let ttype = mname
+          endif
+
+          let static = 0
+          if has_key(member, 'static') && member.static == 1
+            let ttype = 'static ' . ttype
+            let static = 1
+          endif
+
+          if has_key(member, 'signature')
+            let signature = member.signature
+            let item = cppapi#method_internal(static, 1, mname . '(', signature[1:], ttype)
+            let mname = mname . signature
+          else
+            let item = cppapi#field_internal(static, 1, mname, ttype)
+          endif
+          call add(defs[cname].members, item)
+          call add(defs[cname].member_names, mname)
+        endif
+        call s:msg('tag load [' . ptn . '] ' . cname . '.' . mname)
+
+      elseif titem.kind == "f" || titem.kind == "m" || titem.kind == "p"
+        let member = titem
+        let mname = substitute(member.name, '.*\.', '', '')
+        if mname =~ '^\~'
+          continue
+        endif
+
+        try
+          let ttype = split(substitute(member.cmd, '\s*\<' . mname . '\>.*$', '', ''), '\s\+')[-1]
+        catch /.*/
+          let ttype = mname
+        endtry
+
+        let static = 0
+        if has_key(member, 'static') && member.static == 1
+          let ttype = 'static ' . ttype
+          let static = 1
+        endif
+
+        if has_key(member, 'signature')
+          let signature = member.signature
+          call cppapi#function(mname . '(', signature[1:], ttype, member.filename)
+        else
+          "let item = cppapi#field_internal(static, 1, mname, ttype)
+          "echo item
+        endif
+
+        call s:msg('tag load [' . ptn . '] ' . mname)
       endif
     endfor
-    if ignore == 1
+  endwhile
+
+  " add s:class
+  for [key, value] in items(defs)
+    if !has_key(s:class, key)
+      let s:class[ key ] = value
+    else
+      call extend( s:class[ key ].members, value.members )
+    endif
+  endfor
+
+  call s:msg('tag loaded!')
+
+endfunction
+
+" delay load
+command! -nargs=1 -complete=customlist,cppapi#load_list CppapiLoad :call cppapi#load(<f-args>)
+function! cppapi#load_list(A, L, P)
+  let items = []
+  for item in g:cppapi#delay_dirs
+    if item =~ '^'.a:A
+      call add(items, item)
+    endif
+  endfor
+  return items
+endfunction
+
+function! cppapi#load(sub)
+  let rtp = filter(split(&runtimepath, ','), 'v:val =~ a:sub')
+  let files = split(globpath(join(rtp, ','), 'autoload/cppapi/*.vim'), '\n')
+  for file in files
+    if file
       continue
     endif
+    call s:msg('load ' . substitute(file, '^.*\','',''))
+    exe 'so ' . file
+  endfor
+  call s:msg('loadded')
+  call remove(g:cppapi#delay_dirs, a:sub)
+endfunction
 
-    exe 'echo "[cpp-complete]load ' . substitute(file, '^.*[\/]','','') . '"'
-    redraw
+" load
+if !exists('s:dictionary_loaded')
+
+  " delay directories
+  if !exists('g:cppapi#delay_dirs')
+    let g:cppapi#delay_dirs = []
+  end
+  let rtp = split(&runtimepath, ',')
+  for dir in g:cppapi#delay_dirs
+    let rtp = filter(rtp, 'v:val !~ dir')
+  endfor
+
+  let files = split(globpath(join(rtp, ','), 'autoload/cppapi/*.vim'), '\n')
+  for file in files
+    if file
+      continue
+    endif
+    call s:msg('load ' . substitute(file, '^.*\','',''))
     exe 'so ' . file
   endfor
   echo '[cpp-complete] loaded!'
   let s:dictionary_loaded = 1
 endif
-
-
-
-
-
-" generate comp-define from tag
-
-let s:registed = []
-function! cppapi#gendef(type)
-  let first = 1
-  let through = 0
-  let tl = taglist(a:type)
-  wincmd p
-  if a:type =~ '::'
-    call setline(line('$')+1, "call cppapi#struct('" . a:type . "', '', [")
-  endif
-
-  for t in tl
-    let ref = ''
-    if has_key(t, 'typeref')
-      let ref = substitute(t.typeref, '.\{-\}:', '', '')
-    endif
-    if ref == t.name
-      let ref = ''
-    endif
-
-    if t.kind == 't' || t.kind == 's'
-      if first == 0
-        call setline(line('$')+1, '  \ ])')
-        call setline(line('$')+1, '')
-        let through = 1
-        let first = 1
-      endif
-      if index(s:registed, t.name) == -1
-        call add(s:registed, t.name)
-        if t.name[0] == '_'
-          call setline(line('$')+1, "call cppapi#struct('" . t.name[1:] . "', '" . t.name . "', [])")
-          call setline(line('$')+1, "call cppapi#struct('P". t.name[1:] . "', '" . t.name . "', [])")
-          call setline(line('$')+1, "call cppapi#struct('" . t.name . "', '" . ref . "', [")
-        elseif t.name =~ '^tag'
-          call setline(line('$')+1, "call cppapi#struct('" . t.name[3:] . "', '" . t.name . "', [])")
-          call setline(line('$')+1, "call cppapi#struct('P". t.name[3:] . "', '" . t.name . "', [])")
-          call setline(line('$')+1, "call cppapi#struct('" . t.name . "', '" . ref . "', [")
-        else
-          call setline(line('$')+1, "call cppapi#struct('" . t.name . "', '" . ref . "', [")
-        endif
-        let first = 0
-        let through = 0
-      else
-        let through = 1
-      endif
-    elseif t.kind == 'm'
-      if through == 0
-        let parts = split(substitute(t.cmd, '\(__\w\+\|struct\)', '', ''), '[\t ;]\+')
-        if parts[1] == '}'
-          call setline(line('$')+1, "  \\ cppapi#field('" . parts[2] . "', '" . ref . "'),")
-        else
-          call setline(line('$')+1, "  \\ cppapi#field('" . parts[2] . "', '" . parts[1] . "'),")
-        endif
-      endif
-    endif
-  endfor
-  if first == 0
-    call setline(line('$')+1, '  \ ])')
-    call setline(line('$')+1, '')
-  endif
-  if a:type =~ '::'
-    call setline(line('$')+1, '  \ ])')
-    call setline(line('$')+1, '')
-  endif
-endfunction
-
-function! cppapi#test()
-  let line = line('.')
-  let cur = col('.') - 1
-  let [ pstart, s:complete_mode, s:type, s:parts ] = s:analize(line, cur)
-  echo s:type
-  echo s:parts
-  echo s:complete_mode
-
-  let tl = taglist(s:type)
-  for t in tl
-    echo t.cmd
-  endfor
-endfunction
 
