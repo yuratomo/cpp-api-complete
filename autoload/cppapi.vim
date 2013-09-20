@@ -13,6 +13,10 @@ let g:cpp_access_modifier = [
   \ 'private',
   \ 'protected',
   \ 'static',
+  \ 'CALLBACK',
+  \ 'DLLEXPORT',
+  \ 'WINAPI',
+  \ 'extern',
   \ ]
 
 function! s:analize(line, cur)
@@ -36,14 +40,14 @@ function! s:analize(line, cur)
 
   " resolve complete mode [CLASS/MEMBER]
   let idx = cur
-  while idx > 0 && line[idx] !~ '[>. \t(;]'
+  while idx > 0 && line[idx] !~ '[>.: \t(;]'
     let idx -= 1
   endwhile
   if cur <= 0 || line[idx] =~ '[ \t]'
     let compmode = s:MODE_CLASS
   elseif line[idx] == '.'
     let compmode = s:MODE_MEMBER
-  elseif idx > 0 && line[ idx-1 : idx ] == '->'
+  elseif idx > 0 && ( line[ idx-1 : idx ] == '->' || line[ idx-1 : idx ] == '::')
     let compmode = s:MODE_MEMBER
   else
     let compmode = s:MODE_CLASS
@@ -63,7 +67,7 @@ function! s:analize(line, cur)
         let end_bracket = end_bracket - 1
       endif
     endif
-    if pstart == -1 && ( line[vstart - 1] == '.' || line[vstart - 1] == '>' )
+    if pstart == -1 && ( line[vstart - 1] == '.' || line[vstart - 1] == '>' || line[vstart - 1] == ':')
       let pstart = vstart
     endif
     let vstart -= 1
@@ -75,7 +79,7 @@ function! s:analize(line, cur)
 
   " separate variable by dot and resolve type.
   let type = { 'class' : '' }
-  let parts = split(s:normalize_prop(variable), '\.')
+  let parts = split(s:normalize_prop(variable), '\(\.\|::\)')
   if !empty(parts)
     if line[cur-1] == '.'
       call add(parts, '')
@@ -265,6 +269,11 @@ function! s:enum_member_completion(tag, base, res)
       call add(a:res, cppapi#member_to_compitem(item.name, member))
     endif
   endfor
+
+  " find super enum
+  if item.extend != '' && item.extend != '-'
+    call s:enum_member_completion(item.extend, a:base, a:res)
+  endif
 endfunction
 
 function! s:class_member_completion(base, res, type)
@@ -302,7 +311,6 @@ function! s:class_member_completion(base, res, type)
 "         endif
 "         break
 "       endif
-echoerr '!!!!!!!!!!!!!!!!!!!!!!!'
         return
       else
         let item = cppapi#getEnum(class)
@@ -398,6 +406,20 @@ function! s:normalize_prop(prop)
         \ a:prop,
         \ '<.\{-\}>','','g'),
         \ '\[.\{-\}\]','','g')
+endfunction
+
+function! s:normalize_cmd(cmd)
+  let cmd = a:cmd[1:]
+  for modifier in g:cpp_access_modifier
+    let cmd = substitute(cmd, modifier, '', 'g')
+  endfor
+  return substitute(
+        \ substitute(
+        \ substitute(
+        \ cmd,
+        \ '*', '', 'g'),
+        \ '\w*::', '', 'g'),
+        \ '\^', '', 'g')
 endfunction
 
 function! s:find_type(start_line, var)
@@ -725,12 +747,16 @@ endfunction
 
 let s:enum = {}
 function! cppapi#enum(name, members)
+  if has_key(s:enum, a:name)
+    return
+  endif
   let s:enum[ a:name ] = {
     \ 'type'   : s:TYPE_ENUM,
     \ 'name'   : a:name,
     \ 'kind'   : 't',
     \ 'members': a:members,
     \ 'detail' : '',
+    \ 'extend' : '',
     \ }
 endfunction
 
@@ -923,8 +949,6 @@ endfunction
 
 " load from tags
 function! cppapi#loadFromTags()
-  call s:msg("tag load start ... ")
-
   let idx = char2nr('a')
   let end = char2nr('z')
   let defs = {}
@@ -937,7 +961,39 @@ function! cppapi#loadFromTags()
 
     " classes
     for titem in tlist
-      if titem.kind == 'c'
+      " enum and struct
+      if titem.kind == 't'
+        if !has_key(titem, "typeref")
+          continue
+        endif
+        let typerefs = split(titem.typeref, ":")
+        if len(typerefs) < 2
+          continue
+        endif
+        let item_name = titem.name
+        let extend = typerefs[-1]
+        let dtype = typerefs[0]
+        if dtype == 'enum'
+          call cppapi#enum(item_name, [])
+          let s:enum[ item_name ].extend = extend
+        elseif dtype == 'struct'
+          if !has_key(defs, item_name)
+            let defs[ item_name ] = {
+              \ 'name'   : item_name,
+              \ 'kind'   : 't',
+              \ 'extend' : extend,
+              \ 'members': [],
+              \ }
+          endif
+        endif
+
+      " enum member
+      elseif titem.kind == 'e'
+        call cppapi#enum(titem.enum, [])
+        call add(s:enum[ titem.enum ].members, cppapi#field_internal(1, 1, titem.name, titem.enum))
+
+      " class
+      elseif titem.kind == 'c'
         let class = titem
         let cname = substitute(class.name, '.*\.', '', '')
         let extend = ''
@@ -951,78 +1007,70 @@ function! cppapi#loadFromTags()
           let defs[cname] = s:def_class(cname, extend, [])
         endif
 
-      elseif has_key(titem, "class") && ((titem.kind == "f" || titem.kind == "m" || titem.kind == "p"))
+      " function and method and property
+      elseif titem.kind == "f" || titem.kind == "m" || titem.kind == "p"
         " members
         let member = titem
-        let cname = substitute(member.class, '.*\.', '', '')
-        let mname = substitute(member.name, '.*\.', '', '')
-        if mname =~ '^\~'
-          continue
+        if has_key(titem, "class") 
+          let cname = substitute(member.class, '.*\(\.\|::\)', '', '')
+        elseif has_key(titem, "struct") 
+          let cname = substitute(member.struct, '.*\(\.\|::\)', '', '')
+        else
+          let cname = ''
         endif
-        if !has_key(defs, cname)
-          let defs[cname] = s:def_class(cname, '', [])
-        endif
 
-        if !has_key(defs[cname], 'member_names')
-          let defs[cname].member_names = []
-        endif
-        if index(defs[cname].member_names, mname) == -1
-          try
-            let ttype = split(substitute(member.cmd, '\s*\<' . mname . '\>.*$', '', ''), '\s\+')[-1]
-          catch /.*/
-            let ttype = mname
-          endtry
-
-          if index(g:cpp_access_modifier, ttype) >= 0
-            let ttype = mname
-          endif
-
-          let static = 0
-          if has_key(member, 'static') && member.static == 1
-            let ttype = 'static ' . ttype
-            let static = 1
-          endif
-
-          if has_key(member, 'signature')
-            let signature = member.signature
-            let item = cppapi#method_internal(static, 1, mname . '(', signature[1:], ttype)
-            let mname = mname . signature
-          else
-            let item = cppapi#field_internal(static, 1, mname, ttype)
-          endif
-          call add(defs[cname].members, item)
-          call add(defs[cname].member_names, mname)
-        endif
-        call s:msg('tag load [' . ptn . '] ' . cname . '.' . mname)
-
-      elseif titem.kind == "f" || titem.kind == "m" || titem.kind == "p"
-        let member = titem
-        let mname = substitute(member.name, '.*\.', '', '')
+        let mname = substitute(member.name, '.*\(\.\|::\)', '', '')
+        let static = member.static
         if mname =~ '^\~'
           continue
         endif
 
+        " class name
+        if cname != ''
+          if !has_key(defs, cname)
+            let defs[cname] = s:def_class(cname, '', [])
+          endif
+          if !has_key(defs[cname], 'member_names')
+            let defs[cname].member_names = []
+          endif
+          if index(defs[cname].member_names, mname) != -1
+            continue
+          endif
+        endif
+
+        " variable type or return value
+        let cmd = s:normalize_cmd(member.cmd)
         try
-          let ttype = split(substitute(member.cmd, '\s*\<' . mname . '\>.*$', '', ''), '\s\+')[-1]
+          let ttype = split(cmd, '\s\+')[0]
+          if stridx(ttype, '(') != -1
+            " constructor
+            let ttype = ''
+          endif
         catch /.*/
-          let ttype = mname
+          let ttype = '---'
         endtry
 
-        let static = 0
-        if has_key(member, 'static') && member.static == 1
-          let ttype = 'static ' . ttype
-          let static = 1
-        endif
-
+        " signature
         if has_key(member, 'signature')
           let signature = member.signature
-          call cppapi#function(mname . '(', signature[1:], ttype, member.filename)
+          let item = cppapi#method_internal(static, 1, mname . '(', signature[1:], ttype)
+        elseif stridx(cmd, mname . '(') != -1
+          let signature = substitute(substitute(cmd, '^[^(]*(', '', ''), ')[^)]*$', ')', '')
+          let item = cppapi#method_internal(static, 1, mname . '(', signature, ttype)
         else
-          "let item = cppapi#field_internal(static, 1, mname, ttype)
-          "echo item
+          let signature = ''
+          let item = cppapi#field_internal(static, 1, mname, ttype)
         endif
 
-        call s:msg('tag load [' . ptn . '] ' . mname)
+        if cname != ''
+          call add(defs[cname].members, item)
+          call add(defs[cname].member_names, mname . signature)
+          call s:msg('tag load [' . ptn . '] ' . cname . '.' . mname)
+        else
+          if signature != ''
+            call cppapi#function(mname . '(', signature[1:], ttype, titem.filename)
+          endif
+        endif
       endif
     endfor
   endwhile
@@ -1089,4 +1137,19 @@ if !exists('s:dictionary_loaded')
   echo '[cpp-complete] loaded!'
   let s:dictionary_loaded = 1
 endif
+
+" for debug
+func! cppapi#debug()
+  new
+  let idx = 0
+  for key in keys(s:class)
+    let item = s:class[ key ]
+    call setline(idx, item.name . " type:" . item.kind . " extend " . item.extend)
+    let idx = idx+1
+    for member in item.members
+      call setline(idx, "  > " . member.class . " " . member.name . member.detail)
+      let idx = idx+1
+    endfor
+  endfor
+endfunc
 
