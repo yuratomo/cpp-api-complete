@@ -17,6 +17,8 @@ let g:cpp_access_modifier = [
   \ 'DLLEXPORT',
   \ 'WINAPI',
   \ 'extern',
+  \ 'new',
+  \ 'class',
   \ ]
 
 function! s:analize(line, cur)
@@ -79,9 +81,9 @@ function! s:analize(line, cur)
 
   " separate variable by dot and resolve type.
   let type = { 'class' : '' }
-  let parts = split(s:normalize_prop(variable), '\(\.\|::\)')
+  let parts = split(s:normalize_prop(variable), '\(\.\|::\|->\)')
   if !empty(parts)
-    if line[cur-1] == '.'
+    if line[cur-1] == '.' || line[cur-1] == ":" || line[cur-1] == ">"
       call add(parts, '')
     endif
     let type = s:find_type(a:line, parts[0])
@@ -151,7 +153,7 @@ function! cppapi#complete(findstart, base)
 
     elseif s:complete_mode == s:MODE_CLASS
       call s:keyword_completion(a:base, res)
-      "call s:this_member_completion(a:base, res)
+      call s:this_member_completion(a:base, res)
       call s:class_completion(a:base, res)
       call s:function_completion(a:base, res)
       "call s:define_completion(a:base, res)
@@ -294,7 +296,6 @@ function! s:class_member_completion(base, res, type)
     endif
   endif
 
-
   " cpp class member ?
   let class = s:conv_primitive(s:normalize_type(type))
   for part in parts
@@ -382,9 +383,13 @@ function! s:normalize_type(type)
   return substitute(
         \ substitute(
         \ substitute(
+        \ substitute(
+        \ substitute(
         \ a:type, 
+        \ '&', '', 'g'), 
+        \ '*', '', 'g'), 
         \ '<.*>', '', ''), 
-        \ '\[.*\]', '', ''),
+        \ '\[.*\]', '', 'g'),
         \ 'static ', '', '')
 endfunction
 
@@ -424,12 +429,12 @@ endfunction
 
 function! s:find_type(start_line, var)
   let result = { 'class' :  a:var , 'mode' : s:ROOT_IS_VAR}
-
   " find current function start
   let s = a:start_line
   while s >= 0
     let line = getline(s)
-    if line =~ '^\s\+[a-zA-Z0-9_.<>]\+\s\+[a-zA-Z0-9_.<> ]\+('
+    "if line =~ '^\s\+[a-zA-Z0-9_.<>]\+\s\+[a-zA-Z0-9_.<> ]\+('
+    if line =~ '^\w[^=]*[a-zA-Z0-9_<>~:]\+\s*([^;]*$'
       break
     endif
     let s -= 1
@@ -439,16 +444,16 @@ function! s:find_type(start_line, var)
     let l = rng[0]
     while l <= rng[1]
       let line = s:normalize_prop(getline(l))
-      if line =~ '[a-zA-Z0-9_]\+\s\+\<' . a:var . '\>.*'
-        let parts = split(line, '[(). \t;=]\+')
+      if line =~ '[a-zA-Z0-9_*]\+\s\+[*]*\<' . a:var . '\>.*'
+        let parts = split(line, '[()., \t;=*&]\+')
         let pre = ''
         for p in parts
-          if p ==# a:var && index(g:cpp_access_modifier, pre) < 0
+          if p ==# a:var && index(g:cpp_access_modifier, pre) < 0 && pre != ""
             let result.class = s:conv_primitive(pre)
             let result.mode = s:ROOT_IS_VAR
             return result
           endif
-          let pre = p
+          let pre = s:normalize_type(p)
         endfor
       endif
       let l += 1
@@ -480,6 +485,11 @@ function! s:this_class(start_line)
       if line =~ '{'
         break
       endif
+    endif
+    if line =~ '^[^=]*[a-zA-Z0-9_<>]\+::[a-zA-Z0-9_<>~]\+\s*([^;]*$'
+      let retval_and_class = split(substitute(line, '::.*$', '', ''), '\s')
+      let _class = retval_and_class[1]
+      break
     endif
     let s -= 1
   endwhile
@@ -1019,8 +1029,14 @@ function! cppapi#loadFromTags()
           let cname = ''
         endif
 
-        let mname = substitute(member.name, '.*\(\.\|::\)', '', '')
+        " static
         let static = member.static
+        if match(member.cmd, '\<static\>') != -1
+          let static = 1
+        endif
+
+        " member name
+        let mname = substitute(member.name, '.*\(\.\|::\)', '', '')
         if mname =~ '^\~'
           continue
         endif
@@ -1032,9 +1048,6 @@ function! cppapi#loadFromTags()
           endif
           if !has_key(defs[cname], 'member_names')
             let defs[cname].member_names = []
-          endif
-          if index(defs[cname].member_names, mname) != -1
-            continue
           endif
         endif
 
@@ -1063,8 +1076,29 @@ function! cppapi#loadFromTags()
         endif
 
         if cname != ''
-          call add(defs[cname].members, item)
-          call add(defs[cname].member_names, mname . signature)
+          if index(defs[cname].member_names, mname . signature) != -1
+            " priority h > cpp
+            if match(titem.filename, '\.h') != -1
+              let midx = 0
+              for m in defs[cname].members
+                if m.name == mname . '('
+                  for key in keys(item)
+                    if key == 'static'
+                      if item[key] == 0
+                        continue
+                      endif
+                    endif
+                    let defs[cname].members[midx][key] = item[key]
+                  endfor
+                  break
+                endif
+                let midx = midx + 1
+              endfor
+            endif
+          else
+            call add(defs[cname].members, item)
+            call add(defs[cname].member_names, mname . signature)
+          endif
           call s:msg('tag load [' . ptn . '] ' . cname . '.' . mname)
         else
           if signature != ''
@@ -1134,7 +1168,7 @@ if !exists('s:dictionary_loaded')
     call s:msg('load ' . substitute(file, '^.*\','',''))
     exe 'so ' . file
   endfor
-  echo '[cpp-complete] loaded!'
+  call s:msg('loaded!')
   let s:dictionary_loaded = 1
 endif
 
@@ -1147,7 +1181,7 @@ func! cppapi#debug()
     call setline(idx, item.name . " type:" . item.kind . " extend " . item.extend)
     let idx = idx+1
     for member in item.members
-      call setline(idx, "  > " . member.class . " " . member.name . member.detail)
+      call setline(idx, member.static . "  > " . member.class . " " . member.name . member.detail)
       let idx = idx+1
     endfor
   endfor
