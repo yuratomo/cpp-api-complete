@@ -19,6 +19,11 @@ let g:cpp_access_modifier = [
   \ 'extern',
   \ 'new',
   \ 'class',
+  \ 'inline',
+  \ '__CLRCALL_OR_CDECL',
+  \ 'WINBASEAPI',
+  \ 'WINUSERAPI',
+  \ 'WINGDIAPI',
   \ ]
 
 function! s:analize(line, cur)
@@ -497,15 +502,14 @@ function! s:this_class(start_line)
 endfunction
 
 let s:primitive_dict = {
-  \ 'byte '  : 'Byte',
-  \ 'short'  : 'Short',
-  \ 'int'    : 'Integer',
-  \ 'long'   : 'Long',
-  \ 'float'  : 'Single',
-  \ 'double' : 'Double',
-  \ 'char'   : 'Char',
-  \ 'string' : 'String',
-  \ 'bool'   : 'Bool',
+  \ 'byte '  : 'byte',
+  \ 'short'  : 'short',
+  \ 'int'    : 'int',
+  \ 'long'   : 'long',
+  \ 'float'  : 'float',
+  \ 'double' : 'double',
+  \ 'char'   : 'char',
+  \ 'bool'   : 'bool',
   \ }
 function! s:conv_primitive(str)
   if has_key(s:primitive_dict, a:str)
@@ -546,7 +550,7 @@ endfunction
 
 let s:function = []
 function! cppapi#function(name, signature, retval, file)
-  call add(s:function, 
+  let _def = 
     \ {
     \ 'type'      : s:TYPE_FUNCTION,
     \ 'kind'      : 'f',
@@ -554,7 +558,9 @@ function! cppapi#function(name, signature, retval, file)
     \ 'file'      : a:file,
     \ 'retval'    : a:retval,
     \ 'signature' : a:signature
-    \ })
+    \ }
+  call add(s:function, _def)
+  return _def
 endfunction
 
 function! cppapi#member_to_compitem(class, member)
@@ -768,6 +774,7 @@ function! cppapi#enum(name, members)
     \ 'detail' : '',
     \ 'extend' : '',
     \ }
+
 endfunction
 
 function! cppapi#isMethod(member)
@@ -986,6 +993,7 @@ function! cppapi#loadFromTags()
         if dtype == 'enum'
           call cppapi#enum(item_name, [])
           let s:enum[ item_name ].extend = extend
+          let s:enum[ item_name ].load_from_tag = 1
         elseif dtype == 'struct'
           if !has_key(defs, item_name)
             let defs[ item_name ] = {
@@ -1000,6 +1008,7 @@ function! cppapi#loadFromTags()
       " enum member
       elseif titem.kind == 'e'
         call cppapi#enum(titem.enum, [])
+        let s:enum[ titem.enum ].load_from_tag = 1
         call add(s:enum[ titem.enum ].members, cppapi#field_internal(1, 1, titem.name, titem.enum))
 
       " class
@@ -1102,7 +1111,8 @@ function! cppapi#loadFromTags()
           call s:msg('tag load [' . ptn . '] ' . cname . '.' . mname)
         else
           if signature != ''
-            call cppapi#function(mname . '(', signature[1:], ttype, titem.filename)
+            let fdef = cppapi#function(mname . '(', signature[1:], ttype, titem.filename)
+            let fdef.load_from_tag = 1
           endif
         endif
       endif
@@ -1116,10 +1126,10 @@ function! cppapi#loadFromTags()
     else
       call extend( s:class[ key ].members, value.members )
     endif
+    let s:class[ key ].load_from_tag = 1
   endfor
 
   call s:msg('tag loaded!')
-
 endfunction
 
 " delay load
@@ -1175,15 +1185,57 @@ endif
 " for debug
 func! cppapi#debug()
   new
-  let idx = 0
+  let idx = 1
+
+  " class
   for key in keys(s:class)
     let item = s:class[ key ]
-    call setline(idx, item.name . " type:" . item.kind . " extend " . item.extend)
+    if !has_key(item, "load_from_tag")
+      continue
+    endif
+
+    call setline(idx, "call cppapi#class('" . item.name . "', '" . item.extend . "', [")
     let idx = idx+1
     for member in item.members
-      call setline(idx, member.static . "  > " . member.class . " " . member.name . member.detail)
+      if member.type == s:TYPE_FIELD
+        call setline(idx, "  \\ cppapi#field_internal('" . member.static . "', '" . member.public . "', '" . member.name . "', '" . member.class . "'),")
+      else
+        call setline(idx, "  \\ cppapi#method_internal('" . member.static . "', '" . member.public . "', '" . member.name . "', '" . member.detail . "', '" . member.class . "'),")
+      endif
       let idx = idx+1
     endfor
+    call setline(idx, "  \\ ])")
+    let idx = idx+1
+    call setline(idx, "")
+    let idx = idx+1
   endfor
+
+  " enum
+  for [ ekey, eval ] in items(s:enum)
+    if !has_key(eval, "load_from_tag")
+      continue
+    endif
+
+    call setline(idx, "call cppapi#enum('" . ekey . "', [")
+    let idx = idx+1
+    for emember in eval.members
+      call setline(idx, "  \\ cppapi#field_internal('" . member.static . "', '" . member.public . "', '" . member.name . "', '" . member.class . "'),")
+      let idx = idx+1
+    endfor
+    call setline(idx, "  \\ ])")
+    let idx = idx+1
+    call setline(idx, "")
+    let idx = idx+1
+  endfor
+
+  " function
+  for fdef in s:function
+    if !has_key(fdef, "load_from_tag")
+      continue
+    endif
+    call setline(idx, "call cppapi#function('" . fdef.name . "', '" . fdef.signature . "', '" . fdef.retval . "', '" . fdef.file . "')")
+    let idx = idx+1
+  endfor
+
 endfunc
 
