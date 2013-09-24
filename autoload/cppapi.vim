@@ -8,22 +8,58 @@ let s:type = ''
 let s:parts = []
 let s:last_list = []
 
-let g:cpp_access_modifier = [
-  \ 'public',
-  \ 'private',
-  \ 'protected',
-  \ 'static',
-  \ 'CALLBACK',
-  \ 'DLLEXPORT',
-  \ 'WINAPI',
-  \ 'extern',
-  \ 'new',
-  \ 'class',
-  \ 'inline',
-  \ '__CLRCALL_OR_CDECL',
-  \ 'WINBASEAPI',
-  \ 'WINUSERAPI',
-  \ 'WINGDIAPI',
+let g:cpp_normalize_keywords = [
+  \ '\<public\>',
+  \ '\<private\>',
+  \ '\<protected\>',
+  \ '\<static\>',
+  \ '\<CALLBACK\>',
+  \ '\<DLLEXPORT\>',
+  \ '\<AFX_INLINE\>',
+  \ '\<WINAPI\>',
+  \ '\<extern\>',
+  \ '\<new\>',
+  \ '\<class\>',
+  \ '\<virtual\>',
+  \ '\<inline\>',
+  \ '\<__CLRCALL_OR_CDECL\>',
+  \ '\<WINBASEAPI\>',
+  \ '\<WINUSERAPI\>',
+  \ '\<WINGDIAPI\>',
+  \ '\<__in\>',
+  \ '\<__in_z\>',
+  \ '\<__in_nz\>',
+  \ '\<__out\>',
+  \ '\<__out_z\>',
+  \ '\<__out_z_opt\>',
+  \ '\<__out_nz\>',
+  \ '\<__out_nz_opt\>',
+  \ '\<__inout\>',
+  \ '\<__inout_z\>',
+  \ '\<__inout_nz\>',
+  \ '\<__in_opt\>',
+  \ '\<__in_z_opt\>',
+  \ '\<__in_nz_opt\>',
+  \ '\<__out_opt\>',
+  \ '\<__inout_opt\>',
+  \ '\<__inout_z_opt\>',
+  \ '\<__inout_nz_opt\>',
+  \ '\<__checkReturn\w*',
+  \ '\<_CRT\w\+',
+  \ '\<__\(in\|out\|inout\)_bcount[^(]*(([^)]\+)[^)]\+)',
+  \ '\<__\(in\|out\|inout\)_bcount[^(]*([^)]\+)',
+  \ '\<__\(in\|out\|inout\)_ecount[^(]*([^)]\+)',
+  \ '\<__bcount_opt([^)]\+)',
+  \ '\<__deref\w\+',
+  \ '\<__inline\>',
+  \ '\<__drv_at(.*) ',
+  \ '\<__drv[_,a-zA-Z()]\+(.*) ',
+  \ '\<__drv_\w\+',
+  \ '\<__deref',
+  \ '\<__in_range([^)]\+)',
+  \ '\<__in_xcount([^)]\+)',
+  \ '\<__CRT_INLINE\>',
+  \ '\<__restrict__\>',
   \ ]
 
 function! s:analize(line, cur)
@@ -419,17 +455,21 @@ function! s:normalize_prop(prop)
 endfunction
 
 function! s:normalize_cmd(cmd)
-  let cmd = a:cmd[1:]
-  for modifier in g:cpp_access_modifier
-    let cmd = substitute(cmd, modifier, '', 'g')
+  let cmd = a:cmd
+  for keyword in g:cpp_normalize_keywords
+    let cmd = substitute(cmd, keyword, '', 'g')
   endfor
   return substitute(
         \ substitute(
         \ substitute(
+        \ substitute(
+        \ substitute(
         \ cmd,
-        \ '*', '', 'g'),
         \ '\w*::', '', 'g'),
-        \ '\^', '', 'g')
+        \ '\^', '', 'g'),
+        \ '\s\+', ' ', 'g'),
+        \ '(\s', '(', 'g'),
+        \ '\s$', '', '')
 endfunction
 
 function! s:find_type(start_line, var)
@@ -453,7 +493,7 @@ function! s:find_type(start_line, var)
         let parts = split(line, '[()., \t;=*&]\+')
         let pre = ''
         for p in parts
-          if p ==# a:var && index(g:cpp_access_modifier, pre) < 0 && pre != ""
+          if p ==# a:var && index(g:cpp_normalize_keywords, pre) < 0 && pre != ""
             let result.class = s:conv_primitive(pre)
             let result.mode = s:ROOT_IS_VAR
             return result
@@ -510,6 +550,7 @@ let s:primitive_dict = {
   \ 'double' : 'double',
   \ 'char'   : 'char',
   \ 'bool'   : 'bool',
+  \ 'string' : 'basic_string',
   \ }
 function! s:conv_primitive(str)
   if has_key(s:primitive_dict, a:str)
@@ -966,12 +1007,18 @@ endfunction
 
 " load from tags
 function! cppapi#loadFromTags()
-  let idx = char2nr('a')
+  let function_names = []
+  let idx = char2nr('_')
   let end = char2nr('z')
   let defs = {}
   while idx <= end
     let ptn = nr2char(idx)
     let idx += 1
+
+    " through `
+    if idx == nr2char("`")
+      continue
+    endif
 
     call s:msg('tag load [' . ptn . ']. Please wait ... ')
     let tlist = taglist('^' . ptn . '.*')
@@ -1007,6 +1054,11 @@ function! cppapi#loadFromTags()
 
       " enum member
       elseif titem.kind == 'e'
+
+        if has_key(titem, 'access') && titem.access != 'public'
+          continue
+        endif
+
         call cppapi#enum(titem.enum, [])
         let s:enum[ titem.enum ].load_from_tag = 1
         call add(s:enum[ titem.enum ].members, cppapi#field_internal(1, 1, titem.name, titem.enum))
@@ -1018,6 +1070,10 @@ function! cppapi#loadFromTags()
         let extend = ''
         if has_key(class, 'inherits')
           let extend = class.inherits
+        endif
+
+        if has_key(class, 'access') && class.access != 'public'
+          continue
         endif
 
         if has_key(defs, cname)
@@ -1044,6 +1100,12 @@ function! cppapi#loadFromTags()
           let static = 1
         endif
 
+        " accessibility
+        let public = 1
+        if has_key(member, 'access') && member.access != 'public'
+          let public = 0
+        endif
+
         " member name
         let mname = substitute(member.name, '.*\(\.\|::\)', '', '')
         if mname =~ '^\~'
@@ -1061,7 +1123,7 @@ function! cppapi#loadFromTags()
         endif
 
         " variable type or return value
-        let cmd = s:normalize_cmd(member.cmd)
+        let cmd = s:normalize_cmd(member.cmd[1:])
         try
           let ttype = split(cmd, '\s\+')[0]
           if stridx(ttype, '(') != -1
@@ -1074,14 +1136,15 @@ function! cppapi#loadFromTags()
 
         " signature
         if has_key(member, 'signature')
-          let signature = member.signature
-          let item = cppapi#method_internal(static, 1, mname . '(', signature[1:], ttype)
+          let signature = s:normalize_cmd(member.signature)
+          let item = cppapi#method_internal(static, public, mname . '(', signature[1:], ttype)
         elseif stridx(cmd, mname . '(') != -1
-          let signature = substitute(substitute(cmd, '^[^(]*(', '', ''), ')[^)]*$', ')', '')
-          let item = cppapi#method_internal(static, 1, mname . '(', signature, ttype)
+          let signature = substitute(substitute(cmd, '^[^(]*(', '(', ''), ')[^)]*$', ')', '')
+          let signature = s:normalize_cmd(signature)
+          let item = cppapi#method_internal(static, public, mname . '(', signature[1:], ttype)
         else
           let signature = ''
-          let item = cppapi#field_internal(static, 1, mname, ttype)
+          let item = cppapi#field_internal(static, public, mname, ttype)
         endif
 
         if cname != ''
@@ -1090,7 +1153,7 @@ function! cppapi#loadFromTags()
             if match(titem.filename, '\.h') != -1
               let midx = 0
               for m in defs[cname].members
-                if m.name == mname . '('
+                if m.name . signature == mname . signature
                   for key in keys(item)
                     if key == 'static'
                       if item[key] == 0
@@ -1111,6 +1174,10 @@ function! cppapi#loadFromTags()
           call s:msg('tag load [' . ptn . '] ' . cname . '.' . mname)
         else
           if signature != ''
+            if index(function_names, mname . signature) != -1
+              continue
+            endif
+            call add(function_names, mname . signature)
             let fdef = cppapi#function(mname . '(', signature[1:], ttype, titem.filename)
             let fdef.load_from_tag = 1
           endif
@@ -1124,7 +1191,10 @@ function! cppapi#loadFromTags()
     if !has_key(s:class, key)
       let s:class[ key ] = value
     else
-      call extend( s:class[ key ].members, value.members )
+      "call extend( s:class[ key ].members, value.members )
+      for member in value.members
+        call add (s:class[ key ].members, member)
+      endfor
     endif
     let s:class[ key ].load_from_tag = 1
   endfor
@@ -1182,8 +1252,8 @@ if !exists('s:dictionary_loaded')
   let s:dictionary_loaded = 1
 endif
 
-" for debug
-func! cppapi#debug()
+" loaded tag to vim
+func! cppapi#showLoadedTag()
   new
   let idx = 1
 
@@ -1194,9 +1264,30 @@ func! cppapi#debug()
       continue
     endif
 
+    "neglect _XXXX class
+"   if item.name[0] == '_'
+"     continue
+"   endif
+
     call setline(idx, "call cppapi#class('" . item.name . "', '" . item.extend . "', [")
     let idx = idx+1
     for member in item.members
+
+      " neglect not public
+      if member.public != 1
+        continue
+      endif
+
+      "neglect _XXXX member
+      if member.name[0] == '_'
+        continue
+      endif
+
+      "neglect DUMMYXXX member
+      if member.name =~ '^DUMMY'
+        continue
+      endif
+
       if member.type == s:TYPE_FIELD
         call setline(idx, "  \\ cppapi#field_internal('" . member.static . "', '" . member.public . "', '" . member.name . "', '" . member.class . "'),")
       else
@@ -1210,29 +1301,26 @@ func! cppapi#debug()
     let idx = idx+1
   endfor
 
-  " enum
-  for [ ekey, eval ] in items(s:enum)
-    if !has_key(eval, "load_from_tag")
-      continue
-    endif
+" " enum
+" for [ ekey, eval ] in items(s:enum)
+"   if !has_key(eval, "load_from_tag")
+"     continue
+"   endif
 
-    call setline(idx, "call cppapi#enum('" . ekey . "', [")
-    let idx = idx+1
-    for emember in eval.members
-      call setline(idx, "  \\ cppapi#field_internal('" . member.static . "', '" . member.public . "', '" . member.name . "', '" . member.class . "'),")
-      let idx = idx+1
-    endfor
-    call setline(idx, "  \\ ])")
-    let idx = idx+1
-    call setline(idx, "")
-    let idx = idx+1
-  endfor
+"   call setline(idx, "call cppapi#enum('" . ekey . "', [")
+"   let idx = idx+1
+"   for emember in eval.members
+"     call setline(idx, "  \\ cppapi#field_internal('" . member.static . "', '" . member.public . "', '" . member.name . "', '" . member.class . "'),")
+"     let idx = idx+1
+"   endfor
+"   call setline(idx, "  \\ ])")
+"   let idx = idx+1
+"   call setline(idx, "")
+"   let idx = idx+1
+" endfor
 
   " function
   for fdef in s:function
-    if !has_key(fdef, "load_from_tag")
-      continue
-    endif
     call setline(idx, "call cppapi#function('" . fdef.name . "', '" . fdef.signature . "', '" . fdef.retval . "', '" . fdef.file . "')")
     let idx = idx+1
   endfor
