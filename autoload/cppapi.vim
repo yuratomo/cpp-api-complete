@@ -955,10 +955,19 @@ function! cppapi#checkLineForRef()
   endif
 endfunction
 
+function! cppapi#reshowRef()
+  if exists("b:ref")
+    if b:ref.line == line('.')
+      call cppapi#showRef()
+    endif
+  endif
+endfunction
+
 function! cppapi#clearRef()
   let &l:statusline = g:cppapi#statusline
   augroup cppapi
     au!
+    au InsertEnter  <buffer> call cppapi#reshowRef()
   augroup END
 endfunction
 
